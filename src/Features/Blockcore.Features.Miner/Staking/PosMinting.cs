@@ -71,7 +71,7 @@ namespace Blockcore.Features.Miner.Staking
     /// and the new value depends on the kernel, it is hard to predict its value in the future.
     /// </para>
     /// </remarks>
-    public class PosMinting : IPosMinting
+    public class PosMinting : IPosMinting, INetworkWeight
     {
         /// <summary>
         /// Indicates the current state: idle, staking requested, staking in progress and stop staking requested.
@@ -740,7 +740,7 @@ namespace Blockcore.Features.Miner.Staking
             long coinstakeOutputValue = coinstakeInput.TxOut.Value + reward;
 
             int eventuallyStakableUtxosCount = utxoStakeDescriptions.Count;
-            Transaction coinstakeTx = this.PrepareCoinStakeTransactions(chainTip.Height, coinstakeContext, coinstakeOutputValue, eventuallyStakableUtxosCount, ourWeight);
+            Transaction coinstakeTx = this.PrepareCoinStakeTransactions(chainTip.Height, coinstakeContext, coinstakeOutputValue, eventuallyStakableUtxosCount, ourWeight, reward);
 
             if (coinstakeTx is IPosTransactionWithTime posTrxn)
             {
@@ -767,7 +767,7 @@ namespace Blockcore.Features.Miner.Staking
             return true;
         }
 
-        internal Transaction PrepareCoinStakeTransactions(int currentChainHeight, CoinstakeContext coinstakeContext, long coinstakeOutputValue, int utxosCount, long amountStaked)
+        public virtual Transaction PrepareCoinStakeTransactions(int currentChainHeight, CoinstakeContext coinstakeContext, long coinstakeOutputValue, int utxosCount, long amountStaked, long reward)
         {
             // Split stake into SplitFactor utxos if above threshold.
             bool shouldSplitStake = this.ShouldSplitStake(utxosCount, amountStaked, coinstakeOutputValue, currentChainHeight);
@@ -1187,6 +1187,11 @@ namespace Blockcore.Features.Miner.Staking
             res *= this.network.Consensus.ProofOfStakeTimestampMask + 1;
 
             return res;
+        }
+
+        public double GetPosNetworkWeight()
+        {
+            return GetNetworkWeight();
         }
 
         /// <inheritdoc/>

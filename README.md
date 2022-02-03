@@ -7,7 +7,7 @@
     About Blockcore
   </h3>
   <p align="center">
-    Open source .NET Core Bitcoin based blockchain node in C# 
+    Open source .NET Bitcoin based blockchain node in C# 
   </p>
   <p align="center">
       <a href="https://github.com/block-core/blockcore/actions"><img src="https://github.com/block-core/blockcore/workflows/Build/badge.svg" /></a>
@@ -20,7 +20,7 @@
 Introduction
 ----------------------------
 
-### Bitcoin Implementation in C#
+### Bitcoin Implementation in C# and .NET 6
 
 **What is Blockcore?**
 
@@ -49,7 +49,7 @@ Introduction
 - We aim to make it easier for everyone to contribute to the ecosystem.
 - We encourage projects to adopt Blockcore technology as we believe every project has something to offer and help make the technology stronger.
 
-Join our community on [discord](https://discord.gg/TXx4Rm3).  
+Join our community on [discord](https://www.blockcore.net/discord).  
 
 Getting Started Guide
 -----------
@@ -65,7 +65,7 @@ Check this guides for more info:
 
 There is a lot to do and we welcome contributions from developers and testers who want to gain some Blockchain experience.
 
-You can find tasks on the [issues](https://github.com/block-core/blockcore/issues) tab or visit us on [discord](https://discord.gg/TXx4Rm3).
+You can find tasks on the [issues](https://github.com/block-core/blockcore/issues) tab or visit us on [discord](https://www.blockcore.net/discord).
 
 Other Points
 -------
