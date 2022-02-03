@@ -218,7 +218,7 @@ else
     internal WalletAccountReference GetAccount()
     {
         string walletName = this.WalletManager.GetWalletsNames().FirstOrDefault();
-        HdAccount account = this.WalletManager.GetAccounts(walletName).FirstOrDefault();
+        IHdAccount account = this.WalletManager.GetAccounts(walletName).FirstOrDefault();
         var walletAccountReference = new WalletAccountReference(walletName, account.Name);
         return walletAccountReference;
     }
