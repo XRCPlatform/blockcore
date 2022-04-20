@@ -1270,8 +1270,8 @@ namespace Blockcore.Consensus.TransactionInfo
 
                 if (changeScript == null)
                     throw new InvalidOperationException("A change address should be specified (" + ctx.ChangeType + ")");
-
-                if (!(ctx.Dust is Money) || change.CompareTo(GetDust(changeScript)) < 1)
+                
+                if (!(ctx.Dust is Money) || change.CompareTo(GetDust(changeScript)) == 1)
                 {
                     ctx.RestoreMemento(originalCtx);
                     ctx.ChangeAmount = change;
