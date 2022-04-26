@@ -142,7 +142,7 @@
     },
     "XRC (MAIN)": {
       "commandName": "Project",
-      "commandLineArgs": "--chain=XRC -server -iprangefiltering=0 -rpcallowip=127.0.0.1 -rpcbind=127.0.0.1 -rpcpassword=rpcpassword -rpcuser=rpcuser"
+      "commandLineArgs": "--chain=XRC -server -iprangefiltering=0 -rpcallowip=127.0.0.1 -rpcbind=127.0.0.1 --chain=XRC -server -iprangefiltering=0 rpcuser=c78vdfa2sf1c rpcpassword=fg781vd4vg6 rpcport=16661 defaultwalletname=wrapping-services-multisig txindex=true walletaddressbuffer=500"
     },
     "XRC (MAIN/LOCAL)": {
       "commandName": "Project",
