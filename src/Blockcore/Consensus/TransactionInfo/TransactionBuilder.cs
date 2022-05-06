@@ -592,7 +592,7 @@ namespace Blockcore.Consensus.TransactionInfo
             this._Rand = new Random();
             this.CoinSelector = new DefaultCoinSelector();
             this.StandardTransactionPolicy = new StandardTransactionPolicy(this.Network);
-            this.DustPrevention = true;
+            this.DustPrevention = false;
             InitExtensions();
         }
 
@@ -613,7 +613,7 @@ namespace Blockcore.Consensus.TransactionInfo
             this._Rand = new Random(seed);
             this.CoinSelector = new DefaultCoinSelector(seed);
             this.StandardTransactionPolicy = new StandardTransactionPolicy(this.Network);
-            this.DustPrevention = true;
+            this.DustPrevention = false;
             InitExtensions();
         }
 
@@ -1270,7 +1270,7 @@ namespace Blockcore.Consensus.TransactionInfo
 
                 if (changeScript == null)
                     throw new InvalidOperationException("A change address should be specified (" + ctx.ChangeType + ")");
-
+                
                 if (!(ctx.Dust is Money) || change.CompareTo(GetDust(changeScript)) == 1)
                 {
                     ctx.RestoreMemento(originalCtx);

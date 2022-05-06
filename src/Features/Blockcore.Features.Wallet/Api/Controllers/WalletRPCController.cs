@@ -220,7 +220,7 @@ namespace Blockcore.Features.Wallet.Api.Controllers
                 };
 
                 return this.Json(response);
-                
+
             }
             catch (Exception e)
             {
@@ -296,12 +296,19 @@ namespace Blockcore.Features.Wallet.Api.Controllers
                 var isOk = new TransactionBuilder(this.FullNode.Network)
                     .AddCoins(coins)
                     .Verify(fullySigned);
-
-                var response = new TransactionHexModel()
+                if (isOk)
                 {
-                    TransactionHex = fullySigned.ToHex()
-                };
-                return this.Json(response);
+                    var response = new TransactionHexModel()
+                    {
+                        TransactionHex = fullySigned.ToHex()
+                    };
+                    return this.Json(response);
+                }
+                else
+                {
+                    throw new Exception("Transaction content is invalid.");
+                }
+          
             }
             catch (Exception e)
             {
@@ -324,9 +331,11 @@ namespace Blockcore.Features.Wallet.Api.Controllers
         {
             try
             {
-                List<ScriptCoin> coins = new List<ScriptCoin>();
-                List<ISecret> secrets = new List<ISecret>();
-                
+                IEnumerable<ScriptCoin> coins = new List<ScriptCoin>();
+                IEnumerable<ISecret> secrets = new List<ISecret>();
+                List<CoinKey> coinsFixed = new List<CoinKey>();
+                List<CoinKey> keys = new List<CoinKey>();
+
                 var decodedTx = this.FullNode.Network.CreateTransaction(hex);
 
                 if (!string.IsNullOrEmpty(account))
@@ -345,7 +354,6 @@ namespace Blockcore.Features.Wallet.Api.Controllers
                     foreach (UnspentOutputReference unspentOutput in this.walletManager.GetSpendableTransactionsInWallet(accountReference.WalletName, 1))
                     {
                         Script prevscript = unspentOutput.Transaction.ScriptPubKey;
-
                         if (prevscript.IsScriptType(ScriptType.P2SH) || prevscript.IsScriptType(ScriptType.P2WSH))
                         {
                             if (unspentOutput.Address.RedeemScript == null)
@@ -353,24 +361,71 @@ namespace Blockcore.Features.Wallet.Api.Controllers
 
                             // Provide the redeem script to the builder
                             var scriptCoin = ScriptCoin.Create(this.Network, unspentOutput.ToOutPoint(), new TxOut(unspentOutput.Transaction.Amount, prevscript), unspentOutput.Address.RedeemScript);
-                            coins.Add(scriptCoin);
+                            keys.Add(new CoinKey(scriptCoin, HdOperations.GetExtendedPrivateKey(privateKey, wallet.ChainCode, unspentOutput.Address.HdPath, this.Network)));
                         }
 
-                        secrets.Add(HdOperations.GetExtendedPrivateKey(privateKey, wallet.ChainCode, unspentOutput.Address.HdPath, this.Network));
                         //this is much slower as wallet seed is decrypted multiple times for each unspent output.
                         //secrets.Add(wallet.GetExtendedPrivateKeyForAddress(password, unspentOutput.Address));
                     }
+
+                    if (decodedTx.Inputs.Any())
+                    {
+                        foreach (var item in decodedTx.Inputs)
+                        {
+                            var match = keys.Find(c => c.ScriptCoin.Outpoint.Hash == item.PrevOut.Hash);
+                            if (match != null)
+                            {
+                                coinsFixed.Add(match);
+                            }
+                        }
+                        //override to fixed coin list provided in transaction if there were any
+                        if (coinsFixed.Any())
+                        {
+                            coins = coinsFixed.Select(k => k.ScriptCoin);
+                            secrets = coinsFixed.Select(k => k.Secret);
+                        }
+                    }
+                    else
+                    {
+                        coins = keys.Select(k => k.ScriptCoin);
+                        secrets = keys.Select(k => k.Secret);
+                    }
                 }
+                Transaction built = null;
+                var addresses = wallet.GetAllAddresses();
+                bool hasChange = false;
 
-
-                //.ContinueToBuild(decodedTx)?
-                var built = new TransactionBuilder(this.FullNode.Network)
-                .SetChange(this.walletManager.GetUnusedChangeAddress(accountReference).ScriptPubKey)
-                .AddCoins(coins)
-                .AddKeys(secrets.ToArray())
-                .SendFees(new Money(10000))
-                .Send(decodedTx.Outputs.First().ScriptPubKey, decodedTx.Outputs.First().Value)
-                .BuildTransaction(true);
+                foreach (var output in decodedTx.Outputs)
+                {
+                    bool isMine = IsAddressMine(addresses, output.ScriptPubKey);
+                    if (isMine)
+                    {
+                        bool isChange = IsChange(addresses, output.ScriptPubKey);
+                        if (isChange)
+                        {
+                            hasChange = true;
+                        }
+                        break;
+                    }
+                }
+                if (hasChange)//if change address has been specified
+                {
+                    built = new TransactionBuilder(this.FullNode.Network)
+                         .ContinueToBuild(decodedTx)
+                         .AddCoins(coins)
+                         .AddKeys(secrets.ToArray())
+                         .BuildTransaction(true);
+                }
+                else
+                {
+                    built = new TransactionBuilder(this.FullNode.Network)
+                        .AddCoins(coins)
+                        .AddKeys(secrets.ToArray())
+                        .Send(decodedTx.Outputs.First().ScriptPubKey, decodedTx.Outputs.First().Value)
+                        .SetChange(this.walletManager.GetUnusedChangeAddress(accountReference).ScriptPubKey)
+                        .SendFees(new Money(10000))
+                        .BuildTransaction(true);
+                }
 
                 var response = new TransactionHexModel()
                 {
