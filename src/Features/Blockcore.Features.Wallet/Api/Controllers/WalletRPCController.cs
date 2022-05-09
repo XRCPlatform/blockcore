@@ -279,11 +279,11 @@ namespace Blockcore.Features.Wallet.Api.Controllers
 
                         if (prevscript.IsScriptType(ScriptType.P2SH) || prevscript.IsScriptType(ScriptType.P2WSH))
                         {
-                            if (unspentOutput.Address.RedeemScript == null)
+                            if (GetAddressRedeemScript(unspentOutput.Address) == null)
                                 throw new WalletException("Missing redeem script");
 
                             // Provide the redeem script to the builder
-                            var scriptCoin = ScriptCoin.Create(this.Network, unspentOutput.ToOutPoint(), new TxOut(unspentOutput.Transaction.Amount, prevscript), unspentOutput.Address.RedeemScript);
+                            var scriptCoin = ScriptCoin.Create(this.Network, unspentOutput.ToOutPoint(), new TxOut(unspentOutput.Transaction.Amount, prevscript), GetAddressRedeemScript(unspentOutput.Address).FirstOrDefault());
                             coins.Add(scriptCoin);
                         }
                     }
@@ -356,11 +356,11 @@ namespace Blockcore.Features.Wallet.Api.Controllers
                         Script prevscript = unspentOutput.Transaction.ScriptPubKey;
                         if (prevscript.IsScriptType(ScriptType.P2SH) || prevscript.IsScriptType(ScriptType.P2WSH))
                         {
-                            if (unspentOutput.Address.RedeemScript == null)
+                            if (GetAddressRedeemScript(unspentOutput.Address) == null)
                                 throw new WalletException("Missing redeem script");
 
                             // Provide the redeem script to the builder
-                            var scriptCoin = ScriptCoin.Create(this.Network, unspentOutput.ToOutPoint(), new TxOut(unspentOutput.Transaction.Amount, prevscript), unspentOutput.Address.RedeemScript);
+                            var scriptCoin = ScriptCoin.Create(this.Network, unspentOutput.ToOutPoint(), new TxOut(unspentOutput.Transaction.Amount, prevscript), GetAddressRedeemScript(unspentOutput.Address).FirstOrDefault());
                             keys.Add(new CoinKey(scriptCoin, HdOperations.GetExtendedPrivateKey(privateKey, wallet.ChainCode, unspentOutput.Address.HdPath, this.Network)));
                         }
 
@@ -438,6 +438,21 @@ namespace Blockcore.Features.Wallet.Api.Controllers
                 this.logger.LogError("Exception occurred: {0}", e.ToString());
                 throw new RPCServerException(RPCErrorCode.RPC_WALLET_ERROR, e.Message);
             }
+        }
+
+        private ICollection<Script> GetAddressRedeemScript(HdAddress address)
+        {
+            if (address.RedeemScriptObsolete != null)
+            {
+                var redeemScripts = new List<Script>();
+                redeemScripts.Add(address.RedeemScriptObsolete);
+                return redeemScripts;
+            }
+            if (address.RedeemScripts != null)
+            {
+                return address.RedeemScripts;
+            }
+            return null;
         }
 
 

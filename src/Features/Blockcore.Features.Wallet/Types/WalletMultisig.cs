@@ -236,6 +236,8 @@ namespace Blockcore.Features.Wallet.Types
                 // Generate a new address.                
                 var pubkey = GeneratePublicKey(i, network, isChange);
                 BitcoinAddress address = pubkey.Hash.GetAddress(network);
+                var redeemScripts = new List<Script>();
+                redeemScripts.Add(pubkey);
                 // Add the new address details to the list of addresses.
                 HdAddress newAddress = new HdAddress
                 {
@@ -244,7 +246,7 @@ namespace Blockcore.Features.Wallet.Types
                     ScriptPubKey = address.ScriptPubKey,
                     Pubkey = pubkey,
                     Address = address.ToString(),
-                    RedeemScript = pubkey
+                    RedeemScripts = redeemScripts
                 };
 
                 addresses.Add(newAddress);
