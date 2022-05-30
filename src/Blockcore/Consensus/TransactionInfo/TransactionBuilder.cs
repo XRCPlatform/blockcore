@@ -1277,7 +1277,7 @@ namespace Blockcore.Consensus.TransactionInfo
                     ctx.ChangeAmount = change;
                     try
                     {
-                        return BuildTransaction(ctx, group, builders, coins, zero);
+                        return BuildTransaction(ctx, group, builders, selection, zero);
                     }
                     finally
                     {
