@@ -340,6 +340,7 @@ namespace Blockcore.Features.Wallet.Tests
             wallet.AccountsRoot.ElementAt(0).Accounts.Add(new HdAccount
             {
                 Index = 0,
+                Purpose = 44,
                 Name = "account1",
                 HdPath = "m/44'/0'/0'",
                 ExtendedPubKey = accountKeys.ExtPubKey,
@@ -429,7 +430,7 @@ namespace Blockcore.Features.Wallet.Tests
             Types.Wallet wallet = WalletTestsHelpers.CreateWallet("wallet1");
             wallet.AccountsRoot.Add(new AccountRoot()
             {
-                Accounts = new List<IHdAccount> { WalletTestsHelpers.CreateAccount("account 1") }
+                Accounts = new List<HdAccount> { WalletTestsHelpers.CreateAccount("account 1") }
             });
             walletManager.Wallets.Add(wallet);
 
@@ -466,7 +467,7 @@ namespace Blockcore.Features.Wallet.Tests
 
             wallet.AccountsRoot.Add(new AccountRoot()
             {
-                Accounts = new List<IHdAccount> { account }
+                Accounts = new List<HdAccount> { account }
             });
 
             walletManager.Wallets.Add(wallet);
@@ -502,7 +503,7 @@ namespace Blockcore.Features.Wallet.Tests
 
             wallet.AccountsRoot.Add(new AccountRoot()
             {
-                Accounts = new List<IHdAccount> { account }
+                Accounts = new List<HdAccount> { account }
             });
 
             walletManager.Wallets.Add(wallet);
@@ -541,7 +542,7 @@ namespace Blockcore.Features.Wallet.Tests
 
             wallet.AccountsRoot.Add(new AccountRoot()
             {
-                Accounts = new List<IHdAccount> { account }
+                Accounts = new List<HdAccount> { account }
             });
 
             walletManager.Wallets.Add(wallet);
@@ -568,7 +569,7 @@ namespace Blockcore.Features.Wallet.Tests
             Types.Wallet wallet = WalletTestsHelpers.CreateWallet("wallet1");
             wallet.AccountsRoot.Add(new AccountRoot()
             {
-                Accounts = new List<IHdAccount> { account }
+                Accounts = new List<HdAccount> { account }
             });
 
             walletManager.Wallets.Add(wallet);
@@ -701,6 +702,7 @@ namespace Blockcore.Features.Wallet.Tests
             wallet.AccountsRoot.ElementAt(0).Accounts.Add(new HdAccount
             {
                 Index = 0,
+                Purpose = 44,
                 Name = "account1",
                 HdPath = "m/44'/0'/0'",
                 ExtendedPubKey = accountKeys.ExtPubKey,

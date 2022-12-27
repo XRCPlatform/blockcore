@@ -44,8 +44,8 @@ namespace Blockcore.Features.Wallet.Tests
             string encryptedSeed = extendedKey.PrivateKey.GetEncryptedBitcoinSecret(password, this.Network).ToWif();
             Key privateKey = HdOperations.DecryptSeed(encryptedSeed, password, this.Network);
 
-            string accountHdPath = HdOperations.GetAccountHdPath(COINTYPE, 0);
-            string path = HdOperations.CreateHdPath(COINTYPE, 0, false, 0);
+            string accountHdPath = HdOperations.GetAccountHdPath(44, COINTYPE, 0);
+            string path = HdOperations.CreateHdPath(44, COINTYPE, 0, false, 0);
 
             ExtPubKey accountExtPubKey = HdOperations.GetExtendedPublicKey(privateKey, extendedKey.ChainCode, accountHdPath);
             var subjectPubKey = HdOperations.GeneratePublicKey(accountExtPubKey.ToString(this.Network), 0, false, this.Network);

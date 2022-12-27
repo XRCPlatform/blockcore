@@ -14,7 +14,7 @@ namespace Blockcore.Features.Wallet.Tests
         {
             return new AccountRoot()
             {
-                Accounts = new List<IHdAccount>(),
+                Accounts = new List<HdAccount>(),
                 CoinType = coinType
             };
         }
@@ -23,7 +23,7 @@ namespace Blockcore.Features.Wallet.Tests
         {
             return new AccountRoot()
             {
-                Accounts = new List<IHdAccount> {
+                Accounts = new List<HdAccount> {
                     new HdAccount {
                         Name = accountName,
                         InternalAddresses = new List<HdAddress>

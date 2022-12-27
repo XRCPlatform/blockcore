@@ -175,7 +175,7 @@ namespace Blockcore.Tests.Wallet.Common
                 Network = KnownNetworks.Main,
                 walletStore = new WalletMemoryStore(),
                 BlockLocator = new List<uint256>() { KnownNetworks.Main.GenesisHash },
-                AccountsRoot = new List<IAccountRoot> { new AccountRoot() { Accounts = new List<IHdAccount>(), CoinType = KnownNetworks.Main.Consensus.CoinType, LastBlockSyncedHash = KnownNetworks.Main.GenesisHash, LastBlockSyncedHeight = 0 } },
+                AccountsRoot = new List<IAccountRoot> { new AccountRoot() { Accounts = new List<HdAccount>(), CoinType = KnownNetworks.Main.Consensus.CoinType, LastBlockSyncedHash = KnownNetworks.Main.GenesisHash, LastBlockSyncedHeight = 0 } },
             };
 
             WalletData data = walletFile.walletStore.GetData();
@@ -242,15 +242,17 @@ namespace Blockcore.Tests.Wallet.Common
                     LastBlockSyncedHash = new uint256(0),
                     LastBlockSyncedHeight = 0,
                     CoinType = KnownCoinTypes.Bitcoin,
-                    Accounts = new List<IHdAccount>
+                    Accounts = new List<HdAccount>
                     {
                         new HdAccount
                         {
+                            Purpose = 44,
                             ExternalAddresses = GenerateAddresses(count),
                             InternalAddresses = GenerateAddresses(count)
                         },
                         new HdAccount
                         {
+                            Purpose = 44,
                             ExternalAddresses = GenerateAddresses(count),
                             InternalAddresses = GenerateAddresses(count)
                         } }
@@ -263,8 +265,9 @@ namespace Blockcore.Tests.Wallet.Common
             return new HdAddress
             {
                 Index = index,
+                HdPath = "m/44'/0'/0'/0/0",
                 Address = addressName,
-                ScriptPubKey = new Script(),
+                ScriptPubKey = new Script()
                 //Transactions = new List<TransactionData>()
             };
         }
@@ -274,8 +277,9 @@ namespace Blockcore.Tests.Wallet.Common
             return new HdAddress
             {
                 Index = index,
+                HdPath = "m/44'/0'/0'/0/0",
                 Address = addressName,
-                ScriptPubKey = new Script(),
+                ScriptPubKey = new Script()
                 //Transactions = new List<TransactionData> { new TransactionData() }
             };
         }
@@ -290,7 +294,8 @@ namespace Blockcore.Tests.Wallet.Common
                 var address = new HdAddress
                 {
                     Address = key.ToString(),
-                    ScriptPubKey = key
+                    ScriptPubKey = key,
+                    HdPath = $"m/44'/0'/0'/0/{count}",
                 };
                 addresses.Add(address);
             }
@@ -441,6 +446,7 @@ namespace Blockcore.Tests.Wallet.Common
                 {
                     Address = key.PubKey.GetAddress(network).ToString(),
                     ScriptPubKey = key.ScriptPubKey,
+                    HdPath = "m/44'/0'/0'/0/0",
                 };
 
                 store.Add(new List<TransactionOutputData> {

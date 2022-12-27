@@ -4,6 +4,7 @@ using Blockcore.Features.Wallet.Database;
 using Blockcore.Features.Wallet.Types;
 using Blockcore.Networks;
 using NBitcoin;
+using Newtonsoft.Json;
 
 namespace Blockcore.Features.Wallet.Interfaces
 {
@@ -11,6 +12,7 @@ namespace Blockcore.Features.Wallet.Interfaces
     {
         DateTimeOffset CreationTime { get; set; }
         string ExtendedPubKey { get; set; }
+        int Purpose { get; set; }
         ICollection<HdAddress> ExternalAddresses { get; set; }
         string HdPath { get; set; }
         int Index { get; set; }
