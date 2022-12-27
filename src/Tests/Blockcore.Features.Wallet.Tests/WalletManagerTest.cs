@@ -1332,7 +1332,7 @@ namespace Blockcore.Features.Wallet.Tests
             wallet.AccountsRoot.Add(new AccountRoot()
             {
                 CoinType = KnownCoinTypes.Stratis,
-                Accounts = new List<IHdAccount>
+                Accounts = new List<HdAccount>
                 {
                     new HdAccount {
                         ExternalAddresses = WalletTestsHelpers.CreateUnspentTransactionsOfBlockHeights(wallet.walletStore as WalletMemoryStore, KnownNetworks.StratisMain, 8,9,10),
@@ -2694,7 +2694,7 @@ namespace Blockcore.Features.Wallet.Tests
             account2.ExternalAddresses.Add(account2Address1);
             account2.InternalAddresses.Add(account2Address2);
 
-            var accounts = new List<IHdAccount> { account, account2 };
+            var accounts = new List<HdAccount> { account, account2 };
 
             Types.Wallet wallet = WalletTestsHelpers.CreateWallet("myWallet");
             wallet.walletStore = store;

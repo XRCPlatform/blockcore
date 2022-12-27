@@ -54,7 +54,7 @@ namespace Blockcore.Features.Wallet.Interfaces
         /// This is distinct from the list of spendable transactions. A transaction can be unspent but not yet spendable due to coinbase/stake maturity, for example.
         /// </summary>
         /// <returns>A collection of unspent outputs</returns>
-        IEnumerable<UnspentOutputReference> GetUnspentTransactionsInWallet(string walletName, int confirmations, Func<IHdAccount, bool> accountFilter);
+        IEnumerable<UnspentOutputReference> GetUnspentTransactionsInWallet(string walletName, int confirmations, Func<HdAccount, bool> accountFilter);
 
         /// <summary>
         /// Helps identify UTXO's that can participate in staking.
@@ -285,7 +285,7 @@ namespace Blockcore.Features.Wallet.Interfaces
         /// </summary>
         /// <param name="walletName">The name of the wallet to look into.</param>
         /// <returns></returns>
-        IEnumerable<IHdAccount> GetAccounts(string walletName);
+        IEnumerable<HdAccount> GetAccounts(string walletName);
 
         /// <summary>
         /// Gets the last block height.

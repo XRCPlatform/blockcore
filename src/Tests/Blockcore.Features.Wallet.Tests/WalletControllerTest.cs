@@ -867,7 +867,7 @@ namespace Blockcore.Features.Wallet.Tests
             var account = new HdAccount { ExternalAddresses = addresses };
             wallet.AccountsRoot.Add(new AccountRoot()
             {
-                Accounts = new List<IHdAccount> { account }
+                Accounts = new List<HdAccount> { account }
             });
 
             List<FlatHistory> flat = addresses.SelectMany(s => store.GetForAddress(s.Address).Select(t => new FlatHistory { Address = s, Transaction = t })).ToList();
@@ -924,7 +924,7 @@ namespace Blockcore.Features.Wallet.Tests
             var account = new HdAccount { ExternalAddresses = addresses };
             wallet.AccountsRoot.Add(new AccountRoot()
             {
-                Accounts = new List<IHdAccount> { account }
+                Accounts = new List<HdAccount> { account }
             });
 
             List<FlatHistory> flat = addresses.SelectMany(s => store.GetForAddress(s.Address).Select(t => new FlatHistory { Address = s, Transaction = t })).ToList();
@@ -1000,7 +1000,7 @@ namespace Blockcore.Features.Wallet.Tests
             var account = new HdAccount { ExternalAddresses = addresses };
             wallet.AccountsRoot.Add(new AccountRoot()
             {
-                Accounts = new List<IHdAccount> { account }
+                Accounts = new List<HdAccount> { account }
             });
 
             List<FlatHistory> flat = addresses.SelectMany(s => store.GetForAddress(s.Address).Select(t => new FlatHistory { Address = s, Transaction = t })).ToList();
@@ -1101,7 +1101,7 @@ namespace Blockcore.Features.Wallet.Tests
             var account = new HdAccount { ExternalAddresses = addresses };
             wallet.AccountsRoot.Add(new AccountRoot()
             {
-                Accounts = new List<IHdAccount> { account }
+                Accounts = new List<HdAccount> { account }
             });
 
             List<FlatHistory> flat = addresses.SelectMany(s => store.GetForAddress(s.Address).Select(t => new FlatHistory { Address = s, Transaction = t })).ToList();
@@ -1211,7 +1211,7 @@ namespace Blockcore.Features.Wallet.Tests
             var account = new HdAccount { ExternalAddresses = addresses };
             wallet.AccountsRoot.Add(new AccountRoot()
             {
-                Accounts = new List<IHdAccount> { account }
+                Accounts = new List<HdAccount> { account }
             });
 
             List<FlatHistory> flat = addresses.SelectMany(s => store.GetForAddress(s.Address).Select(t => new FlatHistory { Address = s, Transaction = t })).ToList();
@@ -1614,7 +1614,7 @@ namespace Blockcore.Features.Wallet.Tests
             Types.Wallet wallet = WalletTestsHelpers.CreateWallet(walletName);
             wallet.AccountsRoot.Add(new AccountRoot()
             {
-                Accounts = new List<IHdAccount> {
+                Accounts = new List<HdAccount> {
                     new HdAccount
                     {
                         ExternalAddresses = receiveAddresses,
@@ -1660,7 +1660,7 @@ namespace Blockcore.Features.Wallet.Tests
             Types.Wallet wallet = WalletTestsHelpers.CreateWallet(walletName);
             wallet.AccountsRoot.Add(new AccountRoot()
             {
-                Accounts = new List<IHdAccount> { new HdAccount
+                Accounts = new List<HdAccount> { new HdAccount
                 {
                     ExternalAddresses = new List<HdAddress>(),
                     InternalAddresses = new List<HdAddress>(),
@@ -1992,7 +1992,7 @@ namespace Blockcore.Features.Wallet.Tests
 
             wallet.AccountsRoot.Add(new AccountRoot()
             {
-                Accounts = new List<IHdAccount>()
+                Accounts = new List<HdAccount>()
                 {
                     new HdAccount
                     {
@@ -2161,7 +2161,7 @@ namespace Blockcore.Features.Wallet.Tests
 
             wallet.AccountsRoot.Add(new AccountRoot()
             {
-                Accounts = new List<IHdAccount> { new HdAccount
+                Accounts = new List<HdAccount> { new HdAccount
                 {
                     ExternalAddresses = receiveAddresses,
                     InternalAddresses = changeAddresses,

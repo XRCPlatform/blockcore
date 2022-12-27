@@ -950,6 +950,7 @@ namespace Blockcore.Features.Wallet.Api.Controllers
 
             try
             {
+                HdAccount result = this.walletManager.GetUnusedAccount(request.WalletName, request.Password, request.Purpose);
                 return this.Json(result.Name);
             }
             catch (CannotAddAccountToXpubKeyWalletException e)

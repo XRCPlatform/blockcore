@@ -310,7 +310,7 @@ namespace Blockcore.Features.Wallet
 
             string encryptedSeed = extendedKey.PrivateKey.GetEncryptedBitcoinSecret(password, this.network).ToWif();
 
-            string accountHdPath = HdOperations.GetAccountHdPath((int)coinType, 0);
+            string accountHdPath = HdOperations.GetAccountHdPath(44, (int)coinType, 0);
             Key privateKey = HdOperations.DecryptSeed(encryptedSeed, password, this.network);
 
             ExtPubKey accountExtPubKey = HdOperations.GetExtendedPublicKey(privateKey, extendedKey.ChainCode, accountHdPath);
@@ -380,7 +380,7 @@ namespace Blockcore.Features.Wallet
             // Generate multiple accounts and addresses from the get-go.
             for (int i = 0; i < WalletCreationAccountsCount; i++)
             {
-                HdAccount account = wallet.AddNewAccount(password, this.dateTimeProvider.GetTimeOffset(), purpose ?? this.defaultPurpose);
+                IHdAccount account = wallet.AddNewAccount(password, this.dateTimeProvider.GetTimeOffset(), purpose ?? this.defaultPurpose);
                 IEnumerable<HdAddress> newReceivingAddresses = account.CreateAddresses(this.network, this.walletSettings.UnusedAddressesBuffer);
                 IEnumerable<HdAddress> newChangeAddresses = account.CreateAddresses(this.network, this.walletSettings.UnusedAddressesBuffer, true);
                 this.UpdateKeysLookup(wallet, newReceivingAddresses.Concat(newChangeAddresses));
@@ -657,7 +657,7 @@ namespace Blockcore.Features.Wallet
             Guard.NotNull(wallet, nameof(wallet));
             Guard.NotEmpty(password, nameof(password));
 
-            IHdAccount account;
+            HdAccount account;
 
             lock (this.lockObject)
             {
@@ -997,13 +997,13 @@ namespace Blockcore.Features.Wallet
         }
 
         /// <inheritdoc />
-        public IEnumerable<IHdAccount> GetAccounts(string walletName)
+        public IEnumerable<HdAccount> GetAccounts(string walletName)
         {
             Guard.NotEmpty(walletName, nameof(walletName));
 
             Types.Wallet wallet = this.GetWalletByName(walletName);
 
-            IHdAccount[] res = null;
+            HdAccount[] res = null;
             lock (this.lockObject)
             {
                 res = wallet.GetAccounts().ToArray();
@@ -1089,7 +1089,7 @@ namespace Blockcore.Features.Wallet
         }
 
         /// <inheritdoc />
-        public IEnumerable<UnspentOutputReference> GetUnspentTransactionsInWallet(string walletName, int confirmations, Func<IHdAccount, bool> accountFilter)
+        public IEnumerable<UnspentOutputReference> GetUnspentTransactionsInWallet(string walletName, int confirmations, Func<HdAccount, bool> accountFilter)
         {
             Guard.NotEmpty(walletName, nameof(walletName));
 
@@ -1103,7 +1103,7 @@ namespace Blockcore.Features.Wallet
             return res;
         }
 
-        public IEnumerable<UnspentOutputReference> GetSpendableTransactionsInWallet(string walletName, int confirmations, Func<IHdAccount, bool> accountFilter)
+        public IEnumerable<UnspentOutputReference> GetSpendableTransactionsInWallet(string walletName, int confirmations, Func<HdAccount, bool> accountFilter)
         {
             Guard.NotEmpty(walletName, nameof(walletName));
 
@@ -1705,7 +1705,7 @@ namespace Blockcore.Features.Wallet
                 ChainCode = chainCode,
                 CreationTime = creationTime ?? this.dateTimeProvider.GetTimeOffset(),
                 Network = this.network,
-                AccountsRoot = new List<IAccountRoot> { new AccountRoot() { Accounts = new List<IHdAccount>(), CoinType = coinType ?? this.coinType, LastBlockSyncedHeight = 0, LastBlockSyncedHash = this.network.GenesisHash } },
+                AccountsRoot = new List<IAccountRoot> { new AccountRoot() { Accounts = new List<HdAccount>(), CoinType = coinType ?? this.coinType, LastBlockSyncedHeight = 0, LastBlockSyncedHash = this.network.GenesisHash } },
             };
 
             walletFile.walletStore = new WalletStore(this.network, this.dataFolder, walletFile);
@@ -1742,7 +1742,7 @@ namespace Blockcore.Features.Wallet
                 IsExtPubKeyWallet = true,
                 CreationTime = creationTime ?? this.dateTimeProvider.GetTimeOffset(),
                 Network = this.network,
-                AccountsRoot = new List<IAccountRoot> { new AccountRoot() { Accounts = new List<IHdAccount>(), CoinType = this.coinType, LastBlockSyncedHeight = 0, LastBlockSyncedHash = this.network.GenesisHash } },
+                AccountsRoot = new List<IAccountRoot> { new AccountRoot() { Accounts = new List<HdAccount>(), CoinType = this.coinType, LastBlockSyncedHeight = 0, LastBlockSyncedHash = this.network.GenesisHash } },
             };
 
             walletFile.walletStore = new WalletStore(this.network, this.dataFolder, walletFile);
