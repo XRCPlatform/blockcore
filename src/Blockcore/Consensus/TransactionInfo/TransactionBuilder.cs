@@ -592,7 +592,7 @@ namespace Blockcore.Consensus.TransactionInfo
             this._Rand = new Random();
             this.CoinSelector = new DefaultCoinSelector();
             this.StandardTransactionPolicy = new StandardTransactionPolicy(this.Network);
-            this.DustPrevention = false;
+            this.DustPrevention = true;
             InitExtensions();
         }
 
