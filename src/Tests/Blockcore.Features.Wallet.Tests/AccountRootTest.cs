@@ -41,7 +41,7 @@ namespace Blockcore.Features.Wallet.Tests
             used2.Index = 4;
             accountRoot.Accounts.Add(used2);
 
-            HdAccount result = accountRoot.GetFirstUnusedAccount(store);
+            IHdAccount result = accountRoot.GetFirstUnusedAccount(store);
 
             Assert.NotNull(result);
             Assert.Equal(1, result.Index);
@@ -53,7 +53,7 @@ namespace Blockcore.Features.Wallet.Tests
         {
             AccountRoot accountRoot = CreateAccountRootWithHdAccountHavingAddresses("Test", KnownCoinTypes.Stratis);
 
-            HdAccount result = accountRoot.GetAccountByName("Test");
+            IHdAccount result = accountRoot.GetAccountByName("Test");
 
             Assert.NotNull(result);
             Assert.Equal("Test", result.Name);

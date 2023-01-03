@@ -240,7 +240,7 @@ namespace Blockcore.Features.ColdStaking
                 accountName = HotWalletAccountName;
             }
 
-            HdAccount defaultAccount =  wallet.GetAccount(0);
+            IHdAccount defaultAccount =  wallet.GetAccount(0);
             int purposeField = defaultAccount.Purpose;
 
             account = wallet.AddNewAccount(walletPassword, this.dateTimeProvider.GetTimeOffset(), purposeField, accountIndex, accountName);

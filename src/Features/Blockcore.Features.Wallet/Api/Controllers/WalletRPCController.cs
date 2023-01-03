@@ -11,9 +11,11 @@ using Blockcore.Consensus.Chain;
 using Blockcore.Consensus.ScriptInfo;
 using Blockcore.Consensus.TransactionInfo;
 using Blockcore.Controllers;
+using Blockcore.Controllers.Models;
 using Blockcore.Features.BlockStore;
 using Blockcore.Features.RPC;
 using Blockcore.Features.RPC.Exceptions;
+using Blockcore.Features.RPC.ModelBinders;
 using Blockcore.Features.Wallet.Api.Models;
 using Blockcore.Features.Wallet.Database;
 using Blockcore.Features.Wallet.Exceptions;
@@ -458,8 +460,6 @@ namespace Blockcore.Features.Wallet.Api.Controllers
             }
             return null;
         }
-
-
 
         /// <summary>
         /// Broadcasts a raw transaction from hex to local node and network.
@@ -1234,6 +1234,74 @@ namespace Blockcore.Features.Wallet.Api.Controllers
 
             IHdAccount account = this.walletManager.GetAccounts(walletName).First();
             return new WalletAccountReference(walletName, account.Name);
+        }
+
+        private ChainedHeader GetTransactionBlock(uint256 trxid)
+        {
+            ChainedHeader block = null;
+
+            uint256 blockid = this.blockStore?.GetBlockIdByTransactionId(trxid);
+            if (blockid != null)
+                block = this.ChainIndexer?.GetHeader(blockid);
+
+            return block;
+        }
+
+        /// <summary>
+        /// Returns information about a bitcoin address and it's validity.
+        /// </summary>
+        /// <param name="address">The bech32 or base58 <see cref="BitcoinAddress"/> to validate.</param>
+        /// <returns><see cref="ValidatedAddress"/> instance containing information about the bitcoin address and it's validity.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if address provided is null or empty.</exception>
+        [ActionName("validateaddress")]
+        [ActionDescription("Returns information about a bech32 or base58 bitcoin address")]
+        public ValidatedAddress ValidateAddress(string address)
+        {
+            Guard.NotEmpty(address, nameof(address));
+
+            var result = new ValidatedAddress
+            {
+                IsValid = false,
+                Address = address,
+            };
+
+            try
+            {
+                // P2WPKH
+                if (BitcoinWitPubKeyAddress.IsValid(address, this.Network, out Exception _))
+                {
+                    result.IsValid = true;
+                }
+                // P2WSH
+                else if (BitcoinWitScriptAddress.IsValid(address, this.Network, out Exception _))
+                {
+                    result.IsValid = true;
+                }
+                // P2PKH
+                else if (BitcoinPubKeyAddress.IsValid(address, this.Network))
+                {
+                    result.IsValid = true;
+                }
+                // P2SH
+                else if (BitcoinScriptAddress.IsValid(address, this.Network))
+                {
+                    result.IsValid = true;
+                    result.IsScript = true;
+                }
+            }
+            catch (NotImplementedException)
+            {
+                result.IsValid = false;
+            }
+
+            if (result.IsValid)
+            {
+                var scriptPubKey = BitcoinAddress.Create(address, this.Network).ScriptPubKey;
+                result.ScriptPubKey = scriptPubKey.ToHex();
+                result.IsWitness = scriptPubKey.IsScriptType(ScriptType.Witness);
+            }
+
+            return result;
         }
     }
 }

@@ -136,7 +136,7 @@ namespace Blockcore.Features.WalletWatchOnly.Api.Controllers
             }
 
             // Get all wallet transactions for the specified wallet.
-            Func<HdAccount, bool> accountFilter = account == "*" || account == null ?
+            Func<IHdAccount, bool> accountFilter = account == "*" || account == null ?
                 Wallet.Types.Wallet.AllAccounts :
                 a => a.Name == account;
 
