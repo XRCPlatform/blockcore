@@ -240,6 +240,10 @@ namespace Blockcore.Features.RPC
                     // Ensure floats are parsed as decimals and not as doubles.
                     textReader.FloatParseHandling = FloatParseHandling.Decimal;
                     response = await JObject.LoadAsync(textReader);
+
+                    // In case of null return value method there is a hack to return null (true = null)
+                    bool isBoolType;
+                    if (bool.TryParse(response["result"].ToString(), out isBoolType)) response["result"] = null;
                 }
             }
             catch (Exception ex)

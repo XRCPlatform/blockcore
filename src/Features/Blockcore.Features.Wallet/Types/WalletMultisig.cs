@@ -100,7 +100,7 @@ namespace Blockcore.Features.Wallet.Types
     {
         public AccountRootMultisig(List<HdAccountMultisig> accounts, int coinType, uint256 lastBlockSyncedHash, int? lastBlockSyncedHeight)
         {
-            this.Accounts = (ICollection<HdAccount>)accounts;
+            this.Accounts = (ICollection<IHdAccount>)accounts;
             this.CoinType = coinType;
             this.LastBlockSyncedHash = lastBlockSyncedHash;
             this.LastBlockSyncedHeight = lastBlockSyncedHeight;
@@ -108,12 +108,12 @@ namespace Blockcore.Features.Wallet.Types
        
         public AccountRootMultisig()
         {
-            this.Accounts = new List<HdAccount>();
+            this.Accounts = new List<IHdAccount>();
         }
 
         [JsonConverter(typeof(HdAccountMultisigConverter))]
         [JsonProperty(PropertyName = "accounts")]
-        public override ICollection<HdAccount> Accounts { get; set; }
+        public override ICollection<IHdAccount> Accounts { get; set; }
     }
 
     public class AccountRootMultisigConverter : JsonConverter

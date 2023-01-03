@@ -634,7 +634,7 @@ namespace Blockcore.Features.Wallet
         }
 
         /// <inheritdoc />
-        public HdAccount GetUnusedAccount(string walletName, string password, int? purpose = null)
+        public IHdAccount GetUnusedAccount(string walletName, string password, int? purpose = null)
         {
             Guard.NotEmpty(walletName, nameof(walletName));
             Guard.NotEmpty(password, nameof(password));
@@ -647,17 +647,17 @@ namespace Blockcore.Features.Wallet
                 throw new CannotAddAccountToXpubKeyWalletException("Use recover-via-extpubkey instead.");
             }
 
-            HdAccount res = this.GetUnusedAccount(wallet, password, purpose ?? this.defaultPurpose);
+            IHdAccount res = this.GetUnusedAccount(wallet, password, purpose ?? this.defaultPurpose);
             return res;
         }
 
         /// <inheritdoc />
-        public HdAccount GetUnusedAccount(Types.Wallet wallet, string password, int? purpose = null)
+        public IHdAccount GetUnusedAccount(Types.Wallet wallet, string password, int? purpose = null)
         {
             Guard.NotNull(wallet, nameof(wallet));
             Guard.NotEmpty(password, nameof(password));
 
-            HdAccount account;
+            IHdAccount account;
 
             lock (this.lockObject)
             {
@@ -997,13 +997,13 @@ namespace Blockcore.Features.Wallet
         }
 
         /// <inheritdoc />
-        public IEnumerable<HdAccount> GetAccounts(string walletName)
+        public IEnumerable<IHdAccount> GetAccounts(string walletName)
         {
             Guard.NotEmpty(walletName, nameof(walletName));
 
             Types.Wallet wallet = this.GetWalletByName(walletName);
 
-            HdAccount[] res = null;
+            IHdAccount[] res = null;
             lock (this.lockObject)
             {
                 res = wallet.GetAccounts().ToArray();
@@ -1089,7 +1089,7 @@ namespace Blockcore.Features.Wallet
         }
 
         /// <inheritdoc />
-        public IEnumerable<UnspentOutputReference> GetUnspentTransactionsInWallet(string walletName, int confirmations, Func<HdAccount, bool> accountFilter)
+        public IEnumerable<UnspentOutputReference> GetUnspentTransactionsInWallet(string walletName, int confirmations, Func<IHdAccount, bool> accountFilter)
         {
             Guard.NotEmpty(walletName, nameof(walletName));
 
@@ -1103,7 +1103,7 @@ namespace Blockcore.Features.Wallet
             return res;
         }
 
-        public IEnumerable<UnspentOutputReference> GetSpendableTransactionsInWallet(string walletName, int confirmations, Func<HdAccount, bool> accountFilter)
+        public IEnumerable<UnspentOutputReference> GetSpendableTransactionsInWallet(string walletName, int confirmations, Func<IHdAccount, bool> accountFilter)
         {
             Guard.NotEmpty(walletName, nameof(walletName));
 
@@ -1705,7 +1705,7 @@ namespace Blockcore.Features.Wallet
                 ChainCode = chainCode,
                 CreationTime = creationTime ?? this.dateTimeProvider.GetTimeOffset(),
                 Network = this.network,
-                AccountsRoot = new List<IAccountRoot> { new AccountRoot() { Accounts = new List<HdAccount>(), CoinType = coinType ?? this.coinType, LastBlockSyncedHeight = 0, LastBlockSyncedHash = this.network.GenesisHash } },
+                AccountsRoot = new List<IAccountRoot> { new AccountRoot() { Accounts = new List<IHdAccount>(), CoinType = coinType ?? this.coinType, LastBlockSyncedHeight = 0, LastBlockSyncedHash = this.network.GenesisHash } },
             };
 
             walletFile.walletStore = new WalletStore(this.network, this.dataFolder, walletFile);
@@ -1742,7 +1742,7 @@ namespace Blockcore.Features.Wallet
                 IsExtPubKeyWallet = true,
                 CreationTime = creationTime ?? this.dateTimeProvider.GetTimeOffset(),
                 Network = this.network,
-                AccountsRoot = new List<IAccountRoot> { new AccountRoot() { Accounts = new List<HdAccount>(), CoinType = this.coinType, LastBlockSyncedHeight = 0, LastBlockSyncedHash = this.network.GenesisHash } },
+                AccountsRoot = new List<IAccountRoot> { new AccountRoot() { Accounts = new List<IHdAccount>(), CoinType = this.coinType, LastBlockSyncedHeight = 0, LastBlockSyncedHash = this.network.GenesisHash } },
             };
 
             walletFile.walletStore = new WalletStore(this.network, this.dataFolder, walletFile);

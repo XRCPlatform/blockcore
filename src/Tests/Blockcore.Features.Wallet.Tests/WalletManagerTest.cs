@@ -756,7 +756,7 @@ namespace Blockcore.Features.Wallet.Tests
             Types.Wallet wallet = this.walletFixture.GenerateBlankWallet("testWallet", "password");
             wallet.AccountsRoot.ElementAt(0).Accounts.Clear();
 
-            HdAccount result = wallet.AddNewAccount("password", DateTimeOffset.UtcNow, 44);
+            IHdAccount result = wallet.AddNewAccount("password", DateTimeOffset.UtcNow, 44);
 
             Assert.Equal(1, wallet.AccountsRoot.ElementAt(0).Accounts.Count);
             var extKey = new ExtKey(Key.Parse(wallet.EncryptedSeed, "password", wallet.Network), wallet.ChainCode);
@@ -779,7 +779,7 @@ namespace Blockcore.Features.Wallet.Tests
             Types.Wallet wallet = this.walletFixture.GenerateBlankWallet("testWallet", "password");
             wallet.AccountsRoot.ElementAt(0).Accounts.Clear();
 
-            HdAccount result = wallet.AddNewAccount("password", DateTimeOffset.UtcNow, 84);
+            IHdAccount result = wallet.AddNewAccount("password", DateTimeOffset.UtcNow, 84);
 
             Assert.Equal(1, wallet.AccountsRoot.ElementAt(0).Accounts.Count);
             var extKey = new ExtKey(Key.Parse(wallet.EncryptedSeed, "password", wallet.Network), wallet.ChainCode);
@@ -803,7 +803,7 @@ namespace Blockcore.Features.Wallet.Tests
             Types.Wallet wallet = this.walletFixture.GenerateBlankWallet("testWallet", "password");
             wallet.AccountsRoot.ElementAt(0).Accounts.Add(new HdAccount { Name = "unused" });
 
-            HdAccount result = wallet.AddNewAccount("password", DateTimeOffset.UtcNow, 44);
+            IHdAccount result = wallet.AddNewAccount("password", DateTimeOffset.UtcNow, 44);
 
             Assert.Equal(2, wallet.AccountsRoot.ElementAt(0).Accounts.Count);
             var extKey = new ExtKey(Key.Parse(wallet.EncryptedSeed, "password", wallet.Network), wallet.ChainCode);
@@ -1332,7 +1332,7 @@ namespace Blockcore.Features.Wallet.Tests
             wallet.AccountsRoot.Add(new AccountRoot()
             {
                 CoinType = KnownCoinTypes.Stratis,
-                Accounts = new List<HdAccount>
+                Accounts = new List<IHdAccount>
                 {
                     new HdAccount {
                         ExternalAddresses = WalletTestsHelpers.CreateUnspentTransactionsOfBlockHeights(wallet.walletStore as WalletMemoryStore, KnownNetworks.StratisMain, 8,9,10),
@@ -2694,7 +2694,7 @@ namespace Blockcore.Features.Wallet.Tests
             account2.ExternalAddresses.Add(account2Address1);
             account2.InternalAddresses.Add(account2Address2);
 
-            var accounts = new List<HdAccount> { account, account2 };
+            var accounts = new List<IHdAccount> { account, account2 };
 
             Types.Wallet wallet = WalletTestsHelpers.CreateWallet("myWallet");
             wallet.walletStore = store;
