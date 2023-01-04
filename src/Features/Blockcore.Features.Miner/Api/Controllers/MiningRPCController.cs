@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using Blockcore.Consensus;
 using Blockcore.Consensus.BlockInfo;
 using Blockcore.Consensus.Chain;
@@ -21,6 +22,7 @@ using Blockcore.Mining;
 using Blockcore.Networks;
 using Blockcore.Utilities;
 using Blockcore.Utilities.Extensions;
+using Blockcore.Utilities.JsonErrors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NBitcoin;
@@ -391,6 +393,44 @@ namespace Blockcore.Features.Miner.Api.Controllers
             }
 
             return miningInfo;
+        }
+
+        /// <summary>
+        /// Estimates the approximate fee per kilobyte needed for a transaction to begin confirmation within nblocks blocks.Uses virtual transaction size of transaction as defined in BIP 141 (witness data is discounted).
+        /// </summary>
+        /// <param name="nblocks">Confirmation target in blocks.</param>
+        /// <returns>Estimated fee-per-kilobyte</returns>
+        [ActionName("estimatefee")]
+        [ActionDescription("Estimates the approximate fee per kilobyte needed for a transaction to begin confirmation within nblocks blocks.Uses virtual transaction size of transaction as defined in BIP 141 (witness data is discounted).")]
+        public string EstimateFee(int nblocks)
+        {
+            var estimation = this.txMempool.EstimateFee(nblocks);
+            return estimation.FeePerK.ToString();
+        }
+
+        /// <summary>
+        /// Estimates the approximate fee per kilobyte needed for a transaction to begin confirmation within conf_target blocks if possible and return the number of blocks for which the estimate is valid.Uses virtual transaction size as defined in BIP 141 (witness data is discounted).
+        /// </summary>
+        /// <param name="nblocks">Confirmation target in blocks</param>
+        /// <param name="estimate_mode">The fee estimate mode. Whether to return a more conservative estimate which also satisfies a longer history.A conservative estimate potentially returns a higher feerate and is more likely to be sufficient for the desired target, but is not as responsive to short term drops in the prevailing fee market.  Must be one of: "UNSET" (defaults to CONSERVATIVE), "ECONOMICAL", "CONSERVATIVE".</param>
+        /// <returns>(EstimateSmartFeeModel) Return model with information about estimate.</returns>
+        [ActionName("estimatesmartfee")]
+        [ActionDescription("Estimates the approximate fee per kilobyte needed for a transaction to begin confirmation within conf_target blocks if possible and return the number of blocks for which the estimate is valid.Uses virtual transaction size as defined in BIP 141 (witness data is discounted).")]
+        public EstimateSmartFeeModel EstimateSmartFee(int nblocks, string estimate_mode)
+        {
+            var result = new EstimateSmartFeeModel();
+            int foundAtBlock = 0;
+
+            var estimation = this.txMempool.EstimateSmartFee(nblocks, out foundAtBlock);
+
+            result.Blocks = foundAtBlock;
+            result.FeeRate = estimation.FeePerK.ToUnit(MoneyUnit.BTC);
+            if (result.FeeRate.Equals(0))
+            {
+                result.FeeRate = new Money(10).ToUnit(MoneyUnit.BTC);
+            }
+
+            return result;
         }
     }
 }

@@ -231,7 +231,7 @@ namespace Blockcore.Features.RPC
                 await this.next.Invoke(context).ConfigureAwait(false);
 
                 if (responseMemoryStream.Length == 0)
-                    throw new Exception("Method not found");
+                    throw new Exception("Method not found - " + requestObj.ToString());
 
                 responseMemoryStream.Position = 0;
                 using (var streamReader = new StreamReader(responseMemoryStream))
