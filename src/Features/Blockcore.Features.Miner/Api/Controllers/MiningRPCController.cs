@@ -421,7 +421,12 @@ namespace Blockcore.Features.Miner.Api.Controllers
             var result = new EstimateSmartFeeModel();
             int foundAtBlock = 0;
 
-            var estimation = this.txMempool.EstimateSmartFee(nblocks, out foundAtBlock);
+            var height = this.ChainIndexer.Tip.Height;
+
+            var isConservative = true;
+            if ((!string.IsNullOrEmpty(estimate_mode)) && (estimate_mode.ToUpper() == "ECONOMICAL")) isConservative = false;
+
+            var estimation = this.txMempool.EstimateSmartFee(nblocks, out foundAtBlock, height, isConservative);
 
             result.Blocks = foundAtBlock;
             result.FeeRate = estimation.FeePerK.ToUnit(MoneyUnit.BTC);
