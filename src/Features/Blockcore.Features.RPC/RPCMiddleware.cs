@@ -241,13 +241,15 @@ namespace Blockcore.Features.RPC
                     textReader.FloatParseHandling = FloatParseHandling.Decimal;
                     response = await JObject.LoadAsync(textReader);
 
-                    // In case of null return value method there is a hack to return null (true = null)
+                    // In case of null return value method there is a hack to return null in case of boolean
                     bool isBoolType;
                     if (bool.TryParse(response["result"].ToString(), out isBoolType)) response["result"] = null;
                 }
             }
             catch (Exception ex)
             {
+                this.logger.LogDebug("RPC request: {0}", ex.Message + ex.StackTrace);
+
                 await this.HandleRpcInvokeExceptionAsync(context, ex);
 
                 context.Response.Body.Position = 0;

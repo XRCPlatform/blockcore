@@ -1303,5 +1303,29 @@ namespace Blockcore.Features.Wallet.Api.Controllers
 
             return result;
         }
+
+        /// <summary>
+        /// Gets the wallet.
+        /// </summary>
+        /// <param name="walletName">Name of the wallet.</param>
+        /// <returns>(HdAccount) Object with information.</returns>
+        [ActionName("getwallet")]
+        [ActionDescription("Gets the wallet.")]
+        public IHdAccount GetWallet(string walletName)
+        {
+            if (string.IsNullOrEmpty(walletName))
+            {
+                throw new ArgumentNullException("walletName");
+            }
+
+            var accountReference = this.GetWalletAccountReference();
+            Types.Wallet wallet = this.walletManager.GetWalletByName(walletName);
+            
+            var account = this.walletManager.GetAccounts(walletName)
+                                            .Where(i => i.Name.Equals(accountReference.AccountName))
+                                            .Single();
+
+            return account;
+        }
     }
 }
