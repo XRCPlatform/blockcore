@@ -18,6 +18,7 @@ using Blockcore.Features.WalletWatchOnly;
 using Blockcore.Networks.X1.Components;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Blockcore.Networks.XRC.Components;
 
 namespace Blockcore.Node
 {
@@ -35,7 +36,7 @@ namespace Blockcore.Node
             {
                 case "BTC":
                 case "XRC":
-                    nodeBuilder.UsePowConsensus().AddMining().UseWallet().UseWatchOnlyWallet();
+                    nodeBuilder.UseXRCConsensus().UseWallet().UseWatchOnlyWallet();
                     break;
                 case "X1":
                     nodeBuilder.UseX1Consensus().UseColdStakingWallet();

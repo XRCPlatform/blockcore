@@ -318,7 +318,7 @@ namespace Blockcore.Features.Miner.Api.Controllers
                     blockTemplate.Sigoplimit = this.Network.Consensus.Options.MaxBlockSigopsCost;
                     blockTemplate.Sizelimit = this.Network.Consensus.Options.MaxBlockSerializedSize;
 
-                    blockTemplate.Mintime = chainTip.GetMedianTimePast().AddHours(1).ToUnixTimeSeconds();
+                    blockTemplate.Mintime = chainTip.GetMedianTimePast().AddHours(2).ToUnixTimeSeconds();
                 }
             }
 
