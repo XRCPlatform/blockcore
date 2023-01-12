@@ -334,7 +334,7 @@ namespace Blockcore.Features.Miner.Api.Controllers
         /// <returns>(SubmitBlockModel) Object with result information.</returns>
         [ActionName("submitblock")]
         [ActionDescription("Attempts to submit new block to network.")]
-        public bool SubmitBlock(string hex, string dummy = null)
+        public string SubmitBlock(string hex, string dummy = null)
         {
             if (string.IsNullOrEmpty(hex))
             {
@@ -362,7 +362,7 @@ namespace Blockcore.Features.Miner.Api.Controllers
                 this.ConsensusManager.BlockMinedAsync(pblock).GetAwaiter().GetResult();
             }
 
-            return true; // NOTE: Have to return a value or else RPC middleware doesn't serialize properly.
+            return null;
         }
 
         /// <summary>

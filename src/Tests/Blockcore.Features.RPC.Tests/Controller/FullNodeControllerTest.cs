@@ -270,7 +270,7 @@ namespace Blockcore.Features.RPC.Tests.Controller
                 .ReturnsAsync((UnspentOutput)null)
                 .Verifiable();
 
-            var result = await this.controller.GetTxOutAsync(txId.ToString(), 0, false).ConfigureAwait(false);
+            GetTxOutModel result = await this.controller.GetTxOutAsync(txId.ToString(), 0, false).ConfigureAwait(false);
 
             Assert.Null(result);
             this.getUnspentTransaction.Verify();
@@ -296,7 +296,7 @@ namespace Blockcore.Features.RPC.Tests.Controller
                 .ReturnsAsync((UnspentOutput)null)
                 .Verifiable();
 
-            var result = await this.controller.GetTxOutAsync(txId.ToString(), 0, true).ConfigureAwait(false);
+            GetTxOutModel result = await this.controller.GetTxOutAsync(txId.ToString(), 0, true).ConfigureAwait(false);
 
             Assert.Null(result);
             this.pooledGetUnspentTransaction.Verify();
@@ -309,7 +309,7 @@ namespace Blockcore.Features.RPC.Tests.Controller
 
             this.controller = new FullNodeController(this.LoggerFactory.Object, this.pooledTransaction.Object, null, this.getUnspentTransaction.Object, this.networkDifficulty.Object,
                 this.fullNode.Object, this.nodeSettings, this.network, this.chain, this.chainState.Object, this.connectionManager.Object);
-            var result = await this.controller.GetTxOutAsync(txId.ToString(), 0, true).ConfigureAwait(false);
+            GetTxOutModel result = await this.controller.GetTxOutAsync(txId.ToString(), 0, true).ConfigureAwait(false);
 
             Assert.Null(result);
         }
@@ -324,8 +324,7 @@ namespace Blockcore.Features.RPC.Tests.Controller
                 .ReturnsAsync(unspentOutputs)
                 .Verifiable();
 
-            var result = await this.controller.GetTxOutAsync(transaction.ToString(), 0, false).ConfigureAwait(false);
-            GetTxOutModel model = (GetTxOutModel)result;
+            GetTxOutModel model = await this.controller.GetTxOutAsync(transaction.ToString(), 0, false).ConfigureAwait(false);
 
             this.getUnspentTransaction.Verify();
 
@@ -349,8 +348,7 @@ namespace Blockcore.Features.RPC.Tests.Controller
 
             this.controller = new FullNodeController(this.LoggerFactory.Object, this.pooledTransaction.Object, this.pooledGetUnspentTransaction.Object, this.getUnspentTransaction.Object, this.networkDifficulty.Object,
                 this.fullNode.Object, this.nodeSettings, this.network, this.chain, this.chainState.Object, this.connectionManager.Object);
-            var result = await this.controller.GetTxOutAsync(txId.ToString(), 0, true).ConfigureAwait(false);
-            GetTxOutModel model = (GetTxOutModel)result;
+            GetTxOutModel model = await this.controller.GetTxOutAsync(txId.ToString(), 0, true).ConfigureAwait(false);
 
             this.pooledGetUnspentTransaction.Verify();
             Assert.Equal(this.chain.Tip.HashBlock, model.BestBlock);
@@ -371,8 +369,7 @@ namespace Blockcore.Features.RPC.Tests.Controller
                 .ReturnsAsync(unspentOutputs)
                 .Verifiable();
 
-            var result = await this.controller.GetTxOutAsync(txId.ToString(), 0, false).ConfigureAwait(false);
-            GetTxOutModel model = (GetTxOutModel)result;
+            GetTxOutModel model = await this.controller.GetTxOutAsync(txId.ToString(), 0, false).ConfigureAwait(false);
 
             this.getUnspentTransaction.Verify();
             Assert.Equal(this.chain.Tip.HashBlock, model.BestBlock);
@@ -391,8 +388,7 @@ namespace Blockcore.Features.RPC.Tests.Controller
                 .ReturnsAsync(unspentOutputs)
                 .Verifiable();
 
-            var result = await this.controller.GetTxOutAsync(txId.ToString(), 0, true).ConfigureAwait(false);
-            GetTxOutModel model = (GetTxOutModel)result;
+            GetTxOutModel model = await this.controller.GetTxOutAsync(txId.ToString(), 0, true).ConfigureAwait(false);
 
             this.pooledGetUnspentTransaction.Verify();
             Assert.Equal(this.chain.Tip.HashBlock, model.BestBlock);

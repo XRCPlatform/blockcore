@@ -116,7 +116,7 @@ namespace Blockcore.Features.Wallet.Api.Controllers
             {
                 throw new RPCServerException(RPCErrorCode.RPC_INVALID_REQUEST, exception.Message);
             }
-            return true; // NOTE: Have to return a value or else RPC middleware doesn't serialize properly.
+            return true;
         }
 
         [ActionName("walletlock")]
@@ -125,7 +125,7 @@ namespace Blockcore.Features.Wallet.Api.Controllers
         {
             WalletAccountReference account = this.GetWalletAccountReference();
             this.walletManager.LockWallet(account.WalletName);
-            return true; // NOTE: Have to return a value or else RPC middleware doesn't serialize properly.
+            return true;
         }
 
         [ActionName("sendtoaddress")]

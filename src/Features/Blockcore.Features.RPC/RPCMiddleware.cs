@@ -230,25 +230,30 @@ namespace Blockcore.Features.RPC
             {
                 await this.next.Invoke(context).ConfigureAwait(false);
 
-                if (responseMemoryStream.Length == 0)
+                if (context.Response.StatusCode == StatusCodes.Status404NotFound)
                     throw new Exception("Method not found - " + requestObj.ToString());
 
-                responseMemoryStream.Position = 0;
-                using (var streamReader = new StreamReader(responseMemoryStream))
-                using (var textReader = new JsonTextReader(streamReader))
+                if (responseMemoryStream.Length == 0)
                 {
-                    // Ensure floats are parsed as decimals and not as doubles.
-                    textReader.FloatParseHandling = FloatParseHandling.Decimal;
-                    response = await JObject.LoadAsync(textReader);
-
-                    // In case of null return value method there is a hack to return null in case of boolean
-                    bool isBoolType;
-                    if (bool.TryParse(response["result"].ToString(), out isBoolType)) response["result"] = null;
+                    response = new JObject();
+                    response.Add("result", null);
+                    response.Add("error", null);
+                } 
+                else
+                {
+                    responseMemoryStream.Position = 0;
+                    using (var streamReader = new StreamReader(responseMemoryStream))
+                    using (var textReader = new JsonTextReader(streamReader))
+                    {
+                        // Ensure floats are parsed as decimals and not as doubles.
+                        textReader.FloatParseHandling = FloatParseHandling.Decimal;
+                        response = await JObject.LoadAsync(textReader);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                this.logger.LogDebug("RPC request: {0}", ex.Message + ex.StackTrace);
+                this.logger.LogDebug("RPC request: {0} {1}", ex.Message, ex.StackTrace);
 
                 await this.HandleRpcInvokeExceptionAsync(context, ex);
 

@@ -195,7 +195,7 @@ namespace Blockcore.Features.RPC.Controllers
         /// <returns>A <see cref="TransactionVerboseModel"/> or <c>null</c> if the transaction could not be decoded.</returns>
         [ActionName("decoderawtransaction")]
         [ActionDescription("Decodes a serialized transaction hex string into a JSON object describing the transaction.")]
-        public object DecodeRawTransaction(string hex)
+        public TransactionModel DecodeRawTransaction(string hex)
         {
             try
             {
@@ -211,7 +211,7 @@ namespace Blockcore.Features.RPC.Controllers
             }
             catch (Exception)
             {
-                return false;
+                return null;
             }
         }
 
@@ -225,7 +225,7 @@ namespace Blockcore.Features.RPC.Controllers
         /// <exception cref="ArgumentException">Thrown if txid is invalid.</exception>"
         [ActionName("gettxout")]
         [ActionDescription("Gets the unspent outputs of a transaction id and vout number.")]
-        public async Task<object> GetTxOutAsync(string txid, uint vout, bool includeMemPool = true)
+        public async Task<GetTxOutModel> GetTxOutAsync(string txid, uint vout, bool includeMemPool = true)
         {
             uint256 trxid;
             if (!uint256.TryParse(txid, out trxid))
@@ -243,7 +243,7 @@ namespace Blockcore.Features.RPC.Controllers
             if (unspentOutputs != null)
                 return new GetTxOutModel(unspentOutputs, this.Network, this.ChainIndexer.Tip);
 
-            return false;
+            return null;
         }
 
         /// <summary>
@@ -306,12 +306,12 @@ namespace Blockcore.Features.RPC.Controllers
             this.logger.LogDebug("RPC GetBlockHeader {0}", hash);
 
             if (this.ChainIndexer == null)
-                return false;
+                return null;
 
             BlockHeader blockHeader = this.ChainIndexer.GetHeader(uint256.Parse(hash))?.Header;
 
             if (blockHeader == null)
-                return false;
+                return null;
 
             if (isJsonFormat)
                 return new BlockHeaderModel(blockHeader);
@@ -395,14 +395,14 @@ namespace Blockcore.Features.RPC.Controllers
             ChainedHeader chainedHeader = this.ChainIndexer.GetHeader(blockId);
 
             if (chainedHeader == null)
-                return false;
+                return null;
 
             Block block = chainedHeader.Block ?? this.blockStore?.GetBlock(blockId);
 
             // In rare occasions a block that is found in the
             // indexer may not have been pushed to the store yet.
             if (block == null)
-                return false;
+                return null;
 
             if (verbosity == 0)
                 return new HexModel(block.ToHex(this.Network.Consensus.ConsensusFactory));
