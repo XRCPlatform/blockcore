@@ -92,8 +92,12 @@ namespace Blockcore.Networks.XRC.Consensus
                 return consensus.PowLimit;
 
             //hard fork 2 - DigiShield + X11
-            if (chainedHeaderToValidate.Height > XRCConsensusProtocol.PowDigiShieldX11Height)
+            if((chainedHeaderToValidate.Height > XRCConsensusProtocol.PowDigiShieldX11Height) && (chainedHeaderToValidate.Height <= XRCConsensusProtocol.PowDarkGravityWaveHeight))
                 return GetWorkRequiredDigiShield(chainedHeaderToValidate, consensus);
+
+            //hard fork 3 - DarkGravityWave + X11
+            if (chainedHeaderToValidate.Height > XRCConsensusProtocol.PowDarkGravityWaveHeight)
+                return GetWorkRequiredDarkGravityWave(chainedHeaderToValidate, consensus);
 
             Target proofOfWorkLimit;
 
@@ -207,6 +211,66 @@ namespace Blockcore.Networks.XRC.Consensus
             newTarget = newTarget.Divide(BigInteger.ValueOf((long)nAveragingTargetTimespanV4));
 
             var finalTarget = new Target(newTarget);
+            if (finalTarget > proofOfWorkLimit)
+                finalTarget = proofOfWorkLimit;
+
+            return finalTarget;
+        }
+
+        public Target GetWorkRequiredDarkGravityWave(ChainedHeader chainedHeaderToValidate, XRCConsensus consensus)
+        {
+            var nAveragingInterval = 75; // block
+            var multiAlgoTargetSpacingV4 = 10 * 60; // seconds
+            var nAveragingTargetTimespanV4 = nAveragingInterval * multiAlgoTargetSpacingV4;
+
+            var height = chainedHeaderToValidate.Height;
+
+            Target proofOfWorkLimit = consensus.PowLimit2;
+
+            var XRCConsensusProtocol = (XRCConsensusProtocol)consensus.ConsensusFactory.Protocol;
+
+            // TODO: Double check this if-statement
+            if (((height - XRCConsensusProtocol.PowDarkGravityWaveHeight) <= nAveragingInterval)
+                && (consensus.CoinType == (int)XRCCoinType.CoinTypes.XRCMain))
+            {
+                return new Target(new uint256("000000000001a61a000000000000000000000000000000000000000000000000"));
+            }
+
+            BigInteger bnPastTargetAvg = BigInteger.Zero;
+
+            for (int nCountBlocks = 1; nCountBlocks <= nAveragingInterval; nCountBlocks++)
+            {
+                ChainedHeader block = chainedHeaderToValidate.GetAncestor(height - nCountBlocks);
+
+                BigInteger bnTarget = block.Header.Bits.ToBigInteger();
+
+                if (nCountBlocks == 1)
+                    bnPastTargetAvg = bnTarget;
+                else
+                    bnPastTargetAvg = bnPastTargetAvg.Multiply(BigInteger.ValueOf(nCountBlocks)).Add(bnTarget);
+                    bnPastTargetAvg = bnPastTargetAvg.Divide(BigInteger.ValueOf(nCountBlocks).Add(BigInteger.One));
+            }
+
+            ChainedHeader lastBlock = chainedHeaderToValidate.Previous;
+
+            ChainedHeader firstBlock = chainedHeaderToValidate.GetAncestor(height - nAveragingInterval);
+
+            TimeSpan nActualTimespan = lastBlock.Header.BlockTime - firstBlock.Header.BlockTime;
+
+            if (nActualTimespan.TotalSeconds < nAveragingTargetTimespanV4 / 3)
+                nActualTimespan = new TimeSpan(nAveragingTargetTimespanV4 / 3);
+
+            if (nActualTimespan.TotalSeconds > nAveragingTargetTimespanV4 * 3)
+                nActualTimespan = new TimeSpan(nAveragingTargetTimespanV4 * 3);
+
+            // Retarget.
+            BigInteger newTarget = bnPastTargetAvg;
+
+            newTarget = newTarget.Multiply(BigInteger.ValueOf((long)nActualTimespan.TotalSeconds));
+            newTarget = newTarget.Divide(BigInteger.ValueOf((long)nAveragingTargetTimespanV4));
+
+            var finalTarget = new Target(newTarget);
+
             if (finalTarget > proofOfWorkLimit)
                 finalTarget = proofOfWorkLimit;
 
