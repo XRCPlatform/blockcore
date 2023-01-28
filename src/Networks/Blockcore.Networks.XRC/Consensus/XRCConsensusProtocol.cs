@@ -9,7 +9,6 @@ namespace Blockcore.Networks.XRC.Consensus
         public int PowDigiShieldX11Height { get; set; }
         public uint PowX11Time { get; set; }
         public int PowDarkGravityWaveHeight { get; set; }
-        public int PowDarkGravityWaveTime { get; set; }
 
     }
 }
