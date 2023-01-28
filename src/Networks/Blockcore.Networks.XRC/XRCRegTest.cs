@@ -83,7 +83,7 @@ namespace Blockcore.Networks.XRC
                 PowLimit2Time = 0,
                 PowLimit2Height = 0,
                 PowDigiShieldX11Height = 0,
-                PowDigiShieldX11Time = 0,
+                PowX11Time = 0,
                 PowDarkGravityWaveHeight = 0,
                 PowDarkGravityWaveTime = 0
             };

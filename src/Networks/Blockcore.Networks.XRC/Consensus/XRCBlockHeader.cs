@@ -58,7 +58,7 @@ namespace Blockcore.Networks.XRC.Consensus
             {
                 this.ReadWriteHashingStream(new BitcoinStream(ms, true));
                 
-                if (this.Time > this.Consensus.PowDigiShieldX11Time)
+                if (this.Time > this.Consensus.PowX11Time)
                 {
                     return XRCHashX11.Instance.Hash(this.ToBytes());
                 }
