@@ -225,7 +225,8 @@ namespace Blockcore.Networks.XRC.Consensus
 
             var height = chainedHeaderToValidate.Height;
 
-            Target proofOfWorkLimit = consensus.PowLimit2;
+            // TODO: Note that powLimit and powLimit2 are swapped in Blockcore compared to the values in the xrhodiumnode and electrum-xrc repos. Consider a name change to prevent confusion.
+            Target proofOfWorkLimit = consensus.PowLimit;
 
             var XRCConsensusProtocol = (XRCConsensusProtocol)consensus.ConsensusFactory.Protocol;
 
