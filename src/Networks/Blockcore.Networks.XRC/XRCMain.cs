@@ -83,7 +83,7 @@ namespace Blockcore.Networks.XRC
                 PowLimit2Height = 1648,
                 PowDigiShieldX11Height = 136135,
                 PowX11Time = 1652082380,
-                PowDarkGravityWaveHeight = 173000
+                PowDarkGravityWaveHeight = 180000
             };
 
             Block genesisBlock = CreateXRCGenesisBlock(consensusFactory, this.GenesisTime, this.GenesisNonce, this.GenesisBits, this.GenesisVersion, pubKeyMain);
