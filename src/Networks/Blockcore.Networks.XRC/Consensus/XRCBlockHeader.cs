@@ -220,19 +220,16 @@ namespace Blockcore.Networks.XRC.Consensus
         public Target GetWorkRequiredDarkGravityWave(ChainedHeader chainedHeaderToValidate, XRCConsensus consensus)
         {
             var nPastBlocks = 24; // block
-            var multiAlgoTargetSpacingV4 = 10 * 60; // seconds
-            var nTargetTimespan = nPastBlocks * multiAlgoTargetSpacingV4;
+            var nAlgoTargetSpacing = 10 * 60; // seconds
+            var nTargetTimespan = nPastBlocks * nAlgoTargetSpacing;
 
             var height = chainedHeaderToValidate.Height;
-
-            // TODO: Note that powLimit and powLimit2 are swapped in Blockcore compared to the values in the xrhodiumnode and electrum-xrc repos. Consider a name change to prevent confusion.
             Target proofOfWorkLimit = consensus.PowLimit2;
             BigInteger bnPastTargetAvg = BigInteger.Zero;
 
             for (int nCountBlocks = 1; nCountBlocks <= nPastBlocks; nCountBlocks++)
             {
                 ChainedHeader block = chainedHeaderToValidate.GetAncestor(height - nCountBlocks);
-
                 BigInteger bnTarget = block.Header.Bits.ToBigInteger();
 
                 if (nCountBlocks == 1)
@@ -252,10 +249,10 @@ namespace Blockcore.Networks.XRC.Consensus
             TimeSpan nActualTimespan = lastBlock.Header.BlockTime - firstBlock.Header.BlockTime;
 
             if (nActualTimespan.TotalSeconds < nTargetTimespan / 3)
-                nActualTimespan = new TimeSpan(nTargetTimespan / 3);
+                nActualTimespan = TimeSpan.FromSeconds(nTargetTimespan / 3);
 
             if (nActualTimespan.TotalSeconds > nTargetTimespan * 3)
-                nActualTimespan = new TimeSpan(nTargetTimespan * 3);
+                nActualTimespan = TimeSpan.FromSeconds(nTargetTimespan * 3);
 
             // Retarget.
             BigInteger newTarget = bnPastTargetAvg;
