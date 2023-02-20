@@ -219,56 +219,49 @@ namespace Blockcore.Networks.XRC.Consensus
 
         public Target GetWorkRequiredDarkGravityWave(ChainedHeader chainedHeaderToValidate, XRCConsensus consensus)
         {
-            var nAveragingInterval = 24; // block
+            var nPastBlocks = 24; // block
             var multiAlgoTargetSpacingV4 = 10 * 60; // seconds
-            var nAveragingTargetTimespanV4 = nAveragingInterval * multiAlgoTargetSpacingV4;
+            var nTargetTimespan = nPastBlocks * multiAlgoTargetSpacingV4;
 
             var height = chainedHeaderToValidate.Height;
 
             // TODO: Note that powLimit and powLimit2 are swapped in Blockcore compared to the values in the xrhodiumnode and electrum-xrc repos. Consider a name change to prevent confusion.
             Target proofOfWorkLimit = consensus.PowLimit2;
-
-            var XRCConsensusProtocol = (XRCConsensusProtocol)consensus.ConsensusFactory.Protocol;
-
-            // TODO: Double check this if-statement
-            if (((height - XRCConsensusProtocol.PowDarkGravityWaveHeight) <= nAveragingInterval)
-                && (consensus.CoinType == (int)XRCCoinType.CoinTypes.XRCMain))
-            {
-                return new Target(new uint256("000000000001a61a000000000000000000000000000000000000000000000000"));
-            }
-
             BigInteger bnPastTargetAvg = BigInteger.Zero;
 
-            for (int nCountBlocks = 1; nCountBlocks <= nAveragingInterval; nCountBlocks++)
+            for (int nCountBlocks = 1; nCountBlocks <= nPastBlocks; nCountBlocks++)
             {
                 ChainedHeader block = chainedHeaderToValidate.GetAncestor(height - nCountBlocks);
 
                 BigInteger bnTarget = block.Header.Bits.ToBigInteger();
 
                 if (nCountBlocks == 1)
+                {
                     bnPastTargetAvg = bnTarget;
+                }
                 else
+                {
                     bnPastTargetAvg = bnPastTargetAvg.Multiply(BigInteger.ValueOf(nCountBlocks)).Add(bnTarget);
                     bnPastTargetAvg = bnPastTargetAvg.Divide(BigInteger.ValueOf(nCountBlocks).Add(BigInteger.One));
+                }
             }
 
             ChainedHeader lastBlock = chainedHeaderToValidate.Previous;
-
-            ChainedHeader firstBlock = chainedHeaderToValidate.GetAncestor(height - nAveragingInterval);
+            ChainedHeader firstBlock = chainedHeaderToValidate.GetAncestor(height - nPastBlocks);
 
             TimeSpan nActualTimespan = lastBlock.Header.BlockTime - firstBlock.Header.BlockTime;
 
-            if (nActualTimespan.TotalSeconds < nAveragingTargetTimespanV4 / 3)
-                nActualTimespan = new TimeSpan(nAveragingTargetTimespanV4 / 3);
+            if (nActualTimespan.TotalSeconds < nTargetTimespan / 3)
+                nActualTimespan = new TimeSpan(nTargetTimespan / 3);
 
-            if (nActualTimespan.TotalSeconds > nAveragingTargetTimespanV4 * 3)
-                nActualTimespan = new TimeSpan(nAveragingTargetTimespanV4 * 3);
+            if (nActualTimespan.TotalSeconds > nTargetTimespan * 3)
+                nActualTimespan = new TimeSpan(nTargetTimespan * 3);
 
             // Retarget.
             BigInteger newTarget = bnPastTargetAvg;
 
             newTarget = newTarget.Multiply(BigInteger.ValueOf((long)nActualTimespan.TotalSeconds));
-            newTarget = newTarget.Divide(BigInteger.ValueOf((long)nAveragingTargetTimespanV4));
+            newTarget = newTarget.Divide(BigInteger.ValueOf((long)nTargetTimespan));
 
             var finalTarget = new Target(newTarget);
 
