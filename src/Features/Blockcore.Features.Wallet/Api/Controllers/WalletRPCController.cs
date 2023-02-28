@@ -102,7 +102,7 @@ namespace Blockcore.Features.Wallet.Api.Controllers
 
         [ActionName("walletpassphrase")]
         [ActionDescription("Stores the wallet decryption key in memory for the indicated number of seconds. Issuing the walletpassphrase command while the wallet is already unlocked will set a new unlock time that overrides the old one.")]
-        public bool UnlockWallet(string passphrase, int timeout)
+        public string UnlockWallet(string passphrase, int timeout)
         {
             Guard.NotEmpty(passphrase, nameof(passphrase));
 
@@ -116,16 +116,16 @@ namespace Blockcore.Features.Wallet.Api.Controllers
             {
                 throw new RPCServerException(RPCErrorCode.RPC_INVALID_REQUEST, exception.Message);
             }
-            return true;
+            return null;
         }
 
         [ActionName("walletlock")]
         [ActionDescription("Removes the wallet encryption key from memory, locking the wallet. After calling this method, you will need to call walletpassphrase again before being able to call any methods which require the wallet to be unlocked.")]
-        public bool LockWallet()
+        public string LockWallet()
         {
             WalletAccountReference account = this.GetWalletAccountReference();
             this.walletManager.LockWallet(account.WalletName);
-            return true;
+            return null;
         }
 
         [ActionName("sendtoaddress")]
