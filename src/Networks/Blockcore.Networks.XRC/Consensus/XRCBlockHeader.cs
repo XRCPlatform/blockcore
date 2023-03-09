@@ -219,7 +219,7 @@ namespace Blockcore.Networks.XRC.Consensus
 
         public Target GetWorkRequiredDarkGravityWave(ChainedHeader chainedHeaderToValidate, XRCConsensus consensus)
         {
-            var nPastBlocks = 24; // block
+            var nPastBlocks = 70; // block
             var nAlgoTargetSpacing = 10 * 60; // seconds
             var nTargetTimespan = nPastBlocks * nAlgoTargetSpacing;
 
