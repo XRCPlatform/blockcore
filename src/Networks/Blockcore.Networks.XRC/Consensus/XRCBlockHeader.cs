@@ -3,9 +3,13 @@ using System;
 using System.IO;
 using Blockcore.Consensus;
 using Blockcore.Consensus.BlockInfo;
+using Blockcore.Consensus.Chain;
+using Blockcore.Networks.XRC.Crypto;
 using Blockcore.NBitcoin;
 using Blockcore.NBitcoin.Crypto;
-using Blockcore.Networks.XRC.Crypto;
+using Blockcore.NBitcoin.BouncyCastle.math;
+using Blockcore.Networks.XRC.Consensus;
+using System.Linq;
 
 namespace Blockcore.Networks.XRC.Consensus
 {

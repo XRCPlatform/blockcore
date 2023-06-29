@@ -29,7 +29,6 @@ using Blockcore.Utilities.JsonConverters;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Blockcore.NBitcoin.DataEncoders;
 using Newtonsoft.Json;
 using NLog.Time;
 using Xunit;

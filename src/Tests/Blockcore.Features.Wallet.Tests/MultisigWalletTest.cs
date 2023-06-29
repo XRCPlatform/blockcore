@@ -6,8 +6,9 @@ using Blockcore.Features.Wallet.Helpers;
 using Blockcore.Features.Wallet.Types;
 using Blockcore.Networks;
 using Blockcore.Networks.XRC;
-using NBitcoin;
+using Blockcore.NBitcoin;
 using Xunit;
+using Blockcore.NBitcoin.BIP32;
 
 namespace Blockcore.Features.Wallet.Tests
 {

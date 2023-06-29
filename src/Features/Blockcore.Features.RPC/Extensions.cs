@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using NBitcoin;
+using Blockcore.NBitcoin;
 
 namespace Blockcore.Features.RPC
 {
