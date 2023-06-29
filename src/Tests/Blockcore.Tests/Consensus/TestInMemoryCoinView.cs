@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using Blockcore.Consensus.TransactionInfo;
 using Blockcore.Features.Consensus.CoinViews;
+using Blockcore.NBitcoin;
 using Blockcore.Utilities;
-using NBitcoin;
+using Blockcore.NBitcoin;
 
 namespace Blockcore.Tests.Consensus
 {

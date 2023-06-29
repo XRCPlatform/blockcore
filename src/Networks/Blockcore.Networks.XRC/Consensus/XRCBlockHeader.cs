@@ -5,9 +5,9 @@ using Blockcore.Consensus;
 using Blockcore.Consensus.BlockInfo;
 using Blockcore.Consensus.Chain;
 using Blockcore.Networks.XRC.Crypto;
-using NBitcoin;
-using NBitcoin.Crypto;
-using NBitcoin.BouncyCastle.Math;
+using Blockcore.NBitcoin;
+using Blockcore.NBitcoin.Crypto;
+using Blockcore.NBitcoin.BouncyCastle.math;
 using Blockcore.Networks.XRC.Consensus;
 using System.Linq;
 

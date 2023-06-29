@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 using Blockcore.BlockPulling;
 using Blockcore.Consensus.BlockInfo;
 using Blockcore.Consensus.Chain;
+using Blockcore.NBitcoin;
 using Blockcore.P2P.Peer;
 using Blockcore.P2P.Protocol.Payloads;
 using Blockcore.Tests.Common;
 using Blockcore.Utilities;
 using Moq;
-using NBitcoin;
+using Blockcore.NBitcoin;
 using Xunit;
 
 namespace Blockcore.Tests.BlockPulling

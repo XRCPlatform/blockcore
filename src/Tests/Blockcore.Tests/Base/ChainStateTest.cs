@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Threading;
 using Blockcore.Base;
+using Blockcore.NBitcoin;
 using Blockcore.Utilities;
 using Moq;
-using NBitcoin;
+using Blockcore.NBitcoin;
 
 using Xunit;
 

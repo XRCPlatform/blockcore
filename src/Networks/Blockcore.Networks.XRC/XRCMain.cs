@@ -4,13 +4,13 @@ using Blockcore.Base.Deployments;
 using Blockcore.Consensus;
 using Blockcore.Consensus.BlockInfo;
 using Blockcore.Consensus.Checkpoints;
+using Blockcore.NBitcoin;
+using Blockcore.NBitcoin.DataEncoders;
+using Blockcore.NBitcoin.Protocol;
 using Blockcore.Networks.XRC.Consensus;
 using Blockcore.Networks.XRC.Deployments;
 using Blockcore.Networks.XRC.Policies;
 using Blockcore.P2P;
-using NBitcoin;
-using NBitcoin.DataEncoders;
-using NBitcoin.Protocol;
 
 namespace Blockcore.Networks.XRC
 {
@@ -165,6 +165,7 @@ namespace Blockcore.Networks.XRC
             this.Checkpoints.Add(122975, new CheckpointInfo(new uint256("2181671223c47b11f67512e3bc3040eb562da25d5fcbe33cb53d1862cb7bf0dc")));
             this.Checkpoints.Add(131039, new CheckpointInfo(new uint256("81aa79d04b430fc536592f4b6017fae8506869b84b208df655b3d4fe733f5204")));
             this.Checkpoints.Add(136082, new CheckpointInfo(new uint256("2755d2940a031cd27631ad9529ddc96bbbabb4bd0b34be2aa92f92c070d0d417")));
+            this.Checkpoints.Add(192103, new CheckpointInfo(new uint256("e1e04f81a18de80d12bf5fac4d51d7de4629eb880bcdb0d9174a82f741514c64")));
 
             this.Bech32Encoders = new Bech32Encoder[2];
             var encoder = new Bech32Encoder("rh");

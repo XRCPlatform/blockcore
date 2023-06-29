@@ -7,7 +7,7 @@ using Blockcore.Consensus.ScriptInfo;
 using Blockcore.Features.Miner;
 using Blockcore.Mining;
 using Blockcore.Networks;
-using NBitcoin;
+using Blockcore.NBitcoin;
 
 namespace Blockcore.Networks.XRC.Components
 {

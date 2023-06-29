@@ -2,9 +2,10 @@
 using System.Linq;
 using Blockcore.Consensus;
 using Blockcore.Consensus.Chain;
+using Blockcore.NBitcoin;
 using Blockcore.P2P.Peer;
 using Blockcore.Tests.Common;
-using NBitcoin;
+using Blockcore.NBitcoin;
 
 namespace Blockcore.Tests.Consensus
 {

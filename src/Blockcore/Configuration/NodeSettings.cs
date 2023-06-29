@@ -8,11 +8,10 @@ using Blockcore.Builder;
 using Blockcore.Builder.Feature;
 using Blockcore.Configuration.Logging;
 using Blockcore.Configuration.Settings;
+using Blockcore.NBitcoin;
 using Blockcore.Networks;
 using Blockcore.Utilities;
 using Microsoft.Extensions.Logging;
-using NBitcoin;
-using NBitcoin.Protocol;
 using NLog.Extensions.Logging;
 
 namespace Blockcore.Configuration
@@ -129,7 +128,7 @@ namespace Blockcore.Configuration
         /// - Alternatively, if the file name is not supplied then a network-specific file
         ///   name would be determined. In this case we first need to determine the network.
         /// </remarks>
-        public NodeSettings(Network network = null, string agent = "Blockcore",
+        public NodeSettings(Network network = null, string agent = "Blockcore XRC",
             string[] args = null, NetworksSelector networksSelector = null)
         {
             // Create the default logger factory and logger.

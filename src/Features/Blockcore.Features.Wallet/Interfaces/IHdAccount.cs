@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Blockcore.Features.Wallet.Database;
 using Blockcore.Features.Wallet.Types;
 using Blockcore.Networks;
-using NBitcoin;
+using Blockcore.NBitcoin;
 using Newtonsoft.Json;
 
 namespace Blockcore.Features.Wallet.Interfaces

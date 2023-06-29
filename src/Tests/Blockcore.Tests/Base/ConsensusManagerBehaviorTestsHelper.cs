@@ -13,6 +13,7 @@ using Blockcore.Consensus;
 using Blockcore.Consensus.BlockInfo;
 using Blockcore.Consensus.Chain;
 using Blockcore.Interfaces;
+using Blockcore.NBitcoin;
 using Blockcore.P2P;
 using Blockcore.P2P.Peer;
 using Blockcore.P2P.Protocol;
@@ -21,7 +22,7 @@ using Blockcore.Tests.Common;
 using Blockcore.Utilities;
 using Microsoft.Extensions.Logging;
 using Moq;
-using NBitcoin;
+using Blockcore.NBitcoin;
 
 namespace Blockcore.Tests.Base
 {
