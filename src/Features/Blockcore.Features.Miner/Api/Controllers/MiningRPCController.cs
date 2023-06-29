@@ -17,19 +17,12 @@ using Blockcore.Features.RPC;
 using Blockcore.Features.RPC.Exceptions;
 using Blockcore.Features.Wallet.Interfaces;
 using Blockcore.Features.Wallet.Types;
-using Blockcore.Interfaces;
-using Blockcore.Mining;
-using Blockcore.Networks;
+using Blockcore.NBitcoin;
 using Blockcore.Utilities;
 using Blockcore.Utilities.Extensions;
 using Blockcore.Utilities.JsonErrors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NBitcoin;
-using NBitcoin.DataEncoders;
-using NBitcoin.Protocol;
-using Polly;
-using Script = Blockcore.Consensus.ScriptInfo.Script;
 
 namespace Blockcore.Features.Miner.Api.Controllers
 {

@@ -5,8 +5,8 @@ using Blockcore.Consensus.TransactionInfo;
 using Blockcore.Features.Wallet.Database;
 using Blockcore.Features.Wallet.Interfaces;
 using Blockcore.Features.Wallet.Types;
+using Blockcore.NBitcoin;
 using Blockcore.Tests.Common;
-using NBitcoin;
 using Xunit;
 
 namespace Blockcore.Features.Wallet.Tests
