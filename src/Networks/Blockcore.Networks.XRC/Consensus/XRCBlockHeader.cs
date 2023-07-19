@@ -224,8 +224,8 @@ namespace Blockcore.Networks.XRC.Consensus
             var nAveragingInterval = 16; // block
             var multiAlgoTargetSpacingV4 = 10 * 60; // seconds
             var nAveragingTargetTimespanV4 = nAveragingInterval * multiAlgoTargetSpacingV4;
-            var nMaxAdjustDownV4 = 32;
-            var nMaxAdjustUpV4 = 24;
+            var nMaxAdjustDownV4 = 64;
+            var nMaxAdjustUpV4 = 48;
             var nMinActualTimespanV4 = TimeSpan.FromSeconds(nAveragingTargetTimespanV4 * (100 - nMaxAdjustUpV4) / 100);
             var nMaxActualTimespanV4 = TimeSpan.FromSeconds(nAveragingTargetTimespanV4 * (100 + nMaxAdjustDownV4) / 100);
 
