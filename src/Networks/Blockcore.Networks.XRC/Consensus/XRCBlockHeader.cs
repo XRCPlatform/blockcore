@@ -18,6 +18,7 @@ namespace Blockcore.Networks.XRC.Consensus
         private const int X13_HASH_MINERUNCOMPATIBLE = 1;
         private const int X13_HASH_MINERCOMPATIBLE = 2;
         int MedianTimeSpan = 11;
+        int MedianTimeSpanV2 = 5;
 
         public XRCConsensusProtocol Consensus { get; set; }
 
@@ -92,8 +93,13 @@ namespace Blockcore.Networks.XRC.Consensus
                 return consensus.PowLimit;
 
             //hard fork 2 - DigiShield + X11
-            if (chainedHeaderToValidate.Height > XRCConsensusProtocol.PowDigiShieldX11Height)
+            if ((chainedHeaderToValidate.Height > XRCConsensusProtocol.PowDigiShieldX11Height)
+                && (chainedHeaderToValidate.Height <= XRCConsensusProtocol.PowDigiShieldX11V2Height))
                 return GetWorkRequiredDigiShield(chainedHeaderToValidate, consensus);
+
+            //hard fork 3 - DigiShield V2 + X11
+            if (chainedHeaderToValidate.Height > XRCConsensusProtocol.PowDigiShieldX11V2Height)
+                return GetWorkRequiredDigiShieldV2(chainedHeaderToValidate, consensus);
 
             Target proofOfWorkLimit;
 
@@ -191,7 +197,7 @@ namespace Blockcore.Networks.XRC.Consensus
 
             // Limit adjustment step
             // Use medians to prevent time-warp attacks
-            TimeSpan nActualTimespan = GetAverageTimePast(lastBlock) - GetAverageTimePast(firstBlock);
+            TimeSpan nActualTimespan = GetAverageTimePast(lastBlock, this.MedianTimeSpan) - GetAverageTimePast(firstBlock, this.MedianTimeSpan);
             nActualTimespan = TimeSpan.FromSeconds(nAveragingTargetTimespanV4
                                     + (nActualTimespan.TotalSeconds - nAveragingTargetTimespanV4) / 4);
 
@@ -213,12 +219,51 @@ namespace Blockcore.Networks.XRC.Consensus
             return finalTarget;
         }
 
-        public DateTimeOffset GetAverageTimePast(ChainedHeader chainedHeaderToValidate)
+        public Target GetWorkRequiredDigiShieldV2(ChainedHeader chainedHeaderToValidate, XRCConsensus consensus)
+        {
+            var nAveragingInterval = 16; // block
+            var multiAlgoTargetSpacingV4 = 10 * 60; // seconds
+            var nAveragingTargetTimespanV4 = nAveragingInterval * multiAlgoTargetSpacingV4;
+            var nMaxAdjustDownV4 = 32;
+            var nMaxAdjustUpV4 = 24;
+            var nMinActualTimespanV4 = TimeSpan.FromSeconds(nAveragingTargetTimespanV4 * (100 - nMaxAdjustUpV4) / 100);
+            var nMaxActualTimespanV4 = TimeSpan.FromSeconds(nAveragingTargetTimespanV4 * (100 + nMaxAdjustDownV4) / 100);
+
+            var height = chainedHeaderToValidate.Height;
+            Target proofOfWorkLimit = consensus.PowLimit2;
+            ChainedHeader lastBlock = chainedHeaderToValidate.Previous;
+            ChainedHeader firstBlock = chainedHeaderToValidate.GetAncestor(height - nAveragingInterval);
+
+            // Limit adjustment step
+            // Use medians to prevent time-warp attacks
+            TimeSpan nActualTimespan = GetAverageTimePast(lastBlock, this.MedianTimeSpanV2) - GetAverageTimePast(firstBlock, this.MedianTimeSpanV2);
+            nActualTimespan = TimeSpan.FromSeconds(nAveragingTargetTimespanV4
+                                    + (nActualTimespan.TotalSeconds - nAveragingTargetTimespanV4) / 4);
+
+            if (nActualTimespan < nMinActualTimespanV4)
+                nActualTimespan = nMinActualTimespanV4;
+            if (nActualTimespan > nMaxActualTimespanV4)
+                nActualTimespan = nMaxActualTimespanV4;
+
+            // Retarget.
+            BigInteger newTarget = lastBlock.Header.Bits.ToBigInteger();
+
+            newTarget = newTarget.Multiply(BigInteger.ValueOf((long)nActualTimespan.TotalSeconds));
+            newTarget = newTarget.Divide(BigInteger.ValueOf((long)nAveragingTargetTimespanV4));
+
+            var finalTarget = new Target(newTarget);
+            if (finalTarget > proofOfWorkLimit)
+                finalTarget = proofOfWorkLimit;
+
+            return finalTarget;
+        }
+
+        public DateTimeOffset GetAverageTimePast(ChainedHeader chainedHeaderToValidate, int medianTimeSpan)
         {
             var median = new List<DateTimeOffset>();
 
             ChainedHeader chainedHeader = chainedHeaderToValidate;
-            for (int i = 0; i < this.MedianTimeSpan && chainedHeader != null; i++, chainedHeader = chainedHeader.Previous)
+            for (int i = 0; i < medianTimeSpan && chainedHeader != null; i++, chainedHeader = chainedHeader.Previous)
                 median.Add(chainedHeader.Header.BlockTime);
 
             median.Sort();
