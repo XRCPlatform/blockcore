@@ -82,7 +82,7 @@ namespace Blockcore.Networks.XRC
                 PowLimit2Time = 1541879606,
                 PowLimit2Height = 1648,
                 PowDigiShieldX11Height = 136135,
-                PowDigiShieldX11V2Height = 200000,
+                PowDigiShieldX11V2Height = 195099,
                 PowDigiShieldX11Time = 1652082380
             };
 
