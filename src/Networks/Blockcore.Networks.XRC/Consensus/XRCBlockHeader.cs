@@ -98,8 +98,8 @@ namespace Blockcore.Networks.XRC.Consensus
                 return GetWorkRequiredDigiShield(chainedHeaderToValidate, consensus);
 
             //hard fork 3 - DigiShield V2 + X11
-            if (chainedHeaderToValidate.Height > XRCConsensusProtocol.PowDigiShieldX11V2Height)
-                return GetWorkRequiredDigiShieldV2(chainedHeaderToValidate, consensus);
+            //  if (chainedHeaderToValidate.Height > XRCConsensusProtocol.PowDigiShieldX11V2Height)
+            //    return GetWorkRequiredDigiShieldV2(chainedHeaderToValidate, consensus);
 
             Target proofOfWorkLimit;
 

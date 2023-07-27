@@ -61,7 +61,8 @@ namespace Blockcore.Networks.XRC.Consensus
             consensus.ConsensusRules
                 .Register<HeaderTimeChecksRule>()
                 .Register<XRCCheckDifficultyPowRule>()
-                .Register<XRCHeaderVersionRule>();
+                .Register<XRCHeaderVersionRule>()
+                .Register<XRCCheckTimeDelayPowRule>();
 
             consensus.ConsensusRules
                 .Register<BlockMerkleRootRule>();

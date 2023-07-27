@@ -59,12 +59,12 @@ namespace Blockcore.Networks.XRC
             var consensusOptions = new PosConsensusOptions
             {
                 MaxBlockBaseSize = 4 * 1000 * 1000,
-                MaxBlockSerializedSize = 4 * 1000 * 1000,
+                MaxBlockSerializedSize = 4 * 4 * 1000 * 1000,
                 MaxStandardVersion = 2,
-                MaxStandardTxWeight = (4 * 1000 * 1000) / 10,
+                MaxStandardTxWeight = 4 * 400000,
                 MaxBlockSigopsCost = 160000,
-                MaxStandardTxSigopsCost = 160000 / 5,
-                WitnessScaleFactor = 1,
+                MaxStandardTxSigopsCost = 160000 / 5, 
+                WitnessScaleFactor = 4,
             };
 
             var buriedDeployments = new BuriedDeploymentsArray
