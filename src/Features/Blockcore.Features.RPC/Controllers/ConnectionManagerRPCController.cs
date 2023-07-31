@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using Blockcore.Connection;
+using Blockcore.Features.RPC.Models;
 using Blockcore.P2P.Peer;
 using Blockcore.Utilities;
 using Blockcore.Utilities.Extensions;
@@ -135,6 +136,27 @@ namespace Blockcore.Controllers
         public int GetConnectionCount()
         {
             return this.ConnectionManager.ConnectedPeers.Count();
+        }
+
+        /// <summary>
+        /// Returns information about network traffic, including bytes in, bytes out, and current time
+        /// </summary>
+        /// <returns>(int) Count or Error.</returns>
+        [ActionName("getnettotals")]
+        [ActionDescription("Returns information about network traffic, including bytes in, bytes out, and current time")]
+        public GetNetTotalsModel GetNetTotals()
+        {
+            var netTotalsModel = new GetNetTotalsModel();
+
+            foreach (INetworkPeer peer in this.ConnectionManager.ConnectedPeers)
+            {
+                netTotalsModel.TotalBytesRecv += peer.Counter.ReadBytes;
+                netTotalsModel.TotalBytesSent += peer.Counter.WrittenBytes;
+            }
+
+            netTotalsModel.TimeMillis = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+
+            return netTotalsModel;
         }
     }
 }
