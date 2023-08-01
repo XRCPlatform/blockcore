@@ -317,7 +317,24 @@ namespace Blockcore.Features.RPC.Controllers
 
             if (isJsonFormat)
             {
-                var result = new BlockHeaderModel(blockHeader);
+                var result = new GetBlockModel();
+
+                result.Size = blockHeader.GetSerializedSize();
+                result.Bits = string.Format("{0:x8}", blockHeader.Bits.ToCompact());
+
+                if (blockHeader.HashPrevBlock != 0)
+                {
+                    result.PreviousBlockHash = blockHeader.HashPrevBlock.ToString();
+                }
+
+                if (this.ChainIndexer.Tip.Height > chainedHeader.Height)
+                {
+                    result.NextBlockHash = string.Format("{0:x8}", this.ChainIndexer.GetHeader(chainedHeader.Height + 1).Header.GetHash());
+                }
+
+                result.Nonce = blockHeader.Nonce;
+                result.Version = blockHeader.Version;
+                result.Time = blockHeader.Time;
                 result.Hash = chainedHeader.HashBlock.ToString();
                 result.Height = chainedHeader.Height;
                 result.Confirmations = this.ChainIndexer.Tip.Height - chainedHeader.Height;
@@ -326,12 +343,7 @@ namespace Blockcore.Features.RPC.Controllers
                 result.Mediantime = blockHeader.BlockTime.ToUnixTimeSeconds();
                 result.Difficulty = blockHeader.Bits.DifficultySafe();
                 result.Chainwork = chainedHeader.ChainWork.ToString();
-                result.NTx = chainedHeader.Block.Transactions != null ? chainedHeader.Block.Transactions.Count() : 0;
-
-                if (this.ChainIndexer.Tip.Height > chainedHeader.Height)
-                {
-                    result.NextBlockHash = string.Format("{0:x8}", this.ChainIndexer.GetHeader(chainedHeader.Height + 1).Header.GetHash());
-                }
+                result.TransactionsCount = chainedHeader.Block.Transactions != null ? chainedHeader.Block.Transactions.Count() : 0;
 
                 return result;
             }
