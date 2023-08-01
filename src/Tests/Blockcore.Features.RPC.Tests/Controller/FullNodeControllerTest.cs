@@ -542,7 +542,7 @@ namespace Blockcore.Features.RPC.Tests.Controller
 
             this.controller = new FullNodeController(this.LoggerFactory.Object, this.pooledTransaction.Object, this.pooledGetUnspentTransaction.Object, this.getUnspentTransaction.Object, this.networkDifficulty.Object,
                 this.fullNode.Object, this.nodeSettings, this.network, this.chain, this.chainState.Object, this.connectionManager.Object);
-            BlockHeaderModel result = (BlockHeaderModel)this.controller.GetBlockHeader("", true);
+            GetBlockModel result = (GetBlockModel)this.controller.GetBlockHeader("", true);
 
             Assert.Null(result);
         }
@@ -553,21 +553,21 @@ namespace Blockcore.Features.RPC.Tests.Controller
             ChainedHeader block = this.chain.GetHeader(2);
             string bits = GetBlockHeaderBits(block.Header);
 
-            BlockHeaderModel result = (BlockHeaderModel)this.controller.GetBlockHeader(block.HashBlock.ToString(), true);
+            GetBlockModel result = (GetBlockModel)this.controller.GetBlockHeader(block.HashBlock.ToString(), true);
 
             Assert.NotNull(result);
-            Assert.Equal((uint)block.Header.Version, result.Version);
+            Assert.Equal(block.Header.Version, result.Version);
             Assert.Equal(block.Header.HashPrevBlock.ToString(), result.PreviousBlockHash);
-            Assert.Equal(block.Header.HashMerkleRoot.ToString(), result.MerkleRoot);
+            Assert.Equal(block.Header.HashMerkleRoot.ToString(), result.Merkleroot);
             Assert.Equal(block.Header.Time, result.Time);
-            Assert.Equal((int)block.Header.Nonce, result.Nonce);
+            Assert.Equal(block.Header.Nonce, result.Nonce);
             Assert.Equal(bits, result.Bits);
         }
 
         [Fact]
         public void GetBlockHeader_BlockHeaderNotFound_ReturnsNull()
         {
-            BlockHeaderModel result = (BlockHeaderModel)this.controller.GetBlockHeader(new uint256(2562).ToString(), true);
+            GetBlockModel result = (GetBlockModel)this.controller.GetBlockHeader(new uint256(2562).ToString(), true);
 
             Assert.Null(result);
         }

@@ -343,7 +343,11 @@ namespace Blockcore.Features.RPC.Controllers
                 result.Mediantime = blockHeader.BlockTime.ToUnixTimeSeconds();
                 result.Difficulty = blockHeader.Bits.DifficultySafe();
                 result.Chainwork = chainedHeader.ChainWork.ToString();
-                result.TransactionsCount = chainedHeader.Block.Transactions != null ? chainedHeader.Block.Transactions.Count() : 0;
+
+                if (chainedHeader.Block != null)
+                {
+                    result.TransactionsCount = chainedHeader.Block.Transactions != null ? chainedHeader.Block.Transactions.Count() : 0;
+                }
 
                 return result;
             }
