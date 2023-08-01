@@ -308,13 +308,33 @@ namespace Blockcore.Features.RPC.Controllers
             if (this.ChainIndexer == null)
                 return null;
 
-            BlockHeader blockHeader = this.ChainIndexer.GetHeader(uint256.Parse(hash))?.Header;
+
+            var chainedHeader = this.ChainIndexer.GetHeader(uint256.Parse(hash));
+            BlockHeader blockHeader = chainedHeader?.Header;
 
             if (blockHeader == null)
                 return null;
 
             if (isJsonFormat)
-                return new BlockHeaderModel(blockHeader);
+            {
+                var result = new BlockHeaderModel(blockHeader);
+                result.Hash = chainedHeader.HashBlock.ToString();
+                result.Height = chainedHeader.Height;
+                result.Confirmations = this.ChainIndexer.Tip.Height - chainedHeader.Height;
+                result.Merkleroot = blockHeader.HashMerkleRoot.ToString();
+                result.VersionHex = string.Format("{0:x8}", blockHeader.Version);
+                result.Mediantime = blockHeader.BlockTime.ToUnixTimeSeconds();
+                result.Difficulty = blockHeader.Bits.DifficultySafe();
+                result.Chainwork = chainedHeader.ChainWork.ToString();
+                result.NTx = chainedHeader.Block.Transactions != null ? chainedHeader.Block.Transactions.Count() : 0;
+
+                if (this.ChainIndexer.Tip.Height > chainedHeader.Height)
+                {
+                    result.NextBlockHash = string.Format("{0:x8}", this.ChainIndexer.GetHeader(chainedHeader.Height + 1).Header.GetHash());
+                }
+
+                return result;
+            }
 
             return new HexModel(blockHeader.ToHex(this.Network.Consensus.ConsensusFactory));
         }

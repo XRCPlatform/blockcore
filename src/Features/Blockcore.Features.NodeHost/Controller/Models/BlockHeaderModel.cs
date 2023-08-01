@@ -1,4 +1,6 @@
-﻿using Blockcore.Consensus.BlockInfo;
+﻿using System;
+using System.Collections.Generic;
+using Blockcore.Consensus.BlockInfo;
 using Blockcore.Controllers.Converters;
 using Blockcore.NBitcoin;
 using Blockcore.NBitcoin.DataEncoders;
@@ -111,5 +113,65 @@ namespace Blockcore.Controllers.Models
                 (byte)(compact)
             };
         }
+
+        /// <summary>
+        ///   The Hash of the block.
+        /// </summary>
+        [JsonProperty(PropertyName = "hash")]
+        public string Hash { get; set; }
+
+        /// <summary>
+        ///   The number of confirmations for the current block.
+        /// </summary>
+        [JsonProperty(PropertyName = "confirmations")]
+        public int Confirmations { get; set; }
+
+        /// <summary>
+        ///   The block height or index
+        /// </summary>
+        [JsonProperty(PropertyName = "height")]
+        public int Height { get; set; }
+
+        /// <summary>
+        ///   The merkle root
+        /// </summary>
+        [JsonProperty(PropertyName = "merkleroot")]
+        public string Merkleroot { get; set; }
+
+        /// <summary>
+        ///   The block version formatted in hexadecimal
+        /// </summary>
+        [JsonProperty(PropertyName = "versionhex")]
+        public string VersionHex { get; set; }
+
+        /// <summary>
+        ///
+        /// </summary>
+        [JsonProperty(PropertyName = "mediantime")]
+        public long Mediantime { get; set; }
+
+        /// <summary>
+        ///   The difficulty
+        /// </summary>
+        [JsonProperty(PropertyName = "difficulty")]
+        public double Difficulty { get; set; }
+
+        /// <summary>
+        ///    Expected number of hashes required to produce the chain up to this block (in hex)
+        /// </summary>
+        [JsonProperty(PropertyName = "chainwork")]
+        public string Chainwork { get; set; }
+
+        /// <summary>
+        ///   The hash of the next block
+        /// </summary>
+        [JsonProperty(PropertyName = "nextblockhash")]
+        public string NextBlockHash { get; set; }
+
+        /// <summary>
+        /// Transaction count
+        /// </summary>
+        [JsonProperty(PropertyName = "nTx")]
+        public int NTx { get; set; }
     }
 }
