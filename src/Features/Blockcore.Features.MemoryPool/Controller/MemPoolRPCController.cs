@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Net;
 using Blockcore.Base;
 using Blockcore.Configuration;
 using Blockcore.Controllers;
@@ -8,8 +10,10 @@ using Blockcore.Interfaces;
 using Blockcore.NBitcoin;
 using Blockcore.Networks;
 using Blockcore.Utilities;
+using Blockcore.Utilities.JsonErrors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using static Blockcore.Features.MemoryPool.TxMempool;
 
 namespace Blockcore.Features.MemoryPool.Controller
 {
@@ -101,6 +105,65 @@ namespace Blockcore.Features.MemoryPool.Controller
             Guard.NotEmpty(txid, "txid");
             var entry = this.MemPool.GetEntry(new uint256(txid));
             return GetMemPoolEntryFromTx(entry);
+        }
+
+        /// <summary>
+        /// If txid is in the mempool, returns all in-mempool ancestors.
+        /// </summary>
+        /// <param name="txid">The transaction id (must be in mempool).</param>
+        /// <param name="verbose">True for a json object, false for array of transaction ids</param>
+        /// <returns>(List, GetMemPoolEntry or List, string) Return object with informations.</returns>
+        [ActionName("getmempoolancestors")]
+        [ActionDescription("If txid is in the mempool, returns all in-mempool ancestors.")]
+        public List<string> GetMempoolAncestors(string txid, bool verbose)
+        {
+            Guard.NotEmpty(txid, nameof(txid));
+
+            var entryTx = this.MemPool.GetEntry(new uint256(txid));
+            Guard.NotNull(entryTx, "entryTx does not exist.");
+
+            var setAncestors = new SetEntries();
+            long nNoLimit = long.MaxValue;
+            this.MemPool.CalculateMemPoolAncestors(entryTx, setAncestors, nNoLimit, nNoLimit, nNoLimit, nNoLimit, out dummy, false);
+
+            var listTxHash = new List<string>();
+            if (setAncestors != null)
+            {
+                foreach (var entry in setAncestors)
+                {
+                    listTxHash.Add(entry.TransactionHash.ToString());
+                }
+            }
+
+            return listTxHash;
+        }
+
+        /// <summary>
+        /// If txid is in the mempool, returns all in-mempool descendants.
+        /// </summary>
+        /// <param name="txid">The transaction id (must be in mempool).</param>
+        /// <param name="verbose">True for a json object, false for array of transaction ids.</param>
+        /// <returns>(List, GetMemPoolEntry or List, string) Return object with informations.</returns>
+        [ActionName("getmempooldescendants")]
+        [ActionDescription("If txid is in the mempool, returns all in-mempool descendants.")]
+        public List<string> GetMempoolDescendants(string txid, bool verbose)
+        {
+            Guard.NotEmpty(txid, nameof(txid));
+            var entryTx = this.MemPool.GetEntry(new uint256(txid));
+            var setDescendants = new SetEntries();
+            this.MemPool.CalculateDescendants(entryTx, setDescendants);
+
+            var listTxHash = new List<string>();
+
+            if (setDescendants != null)
+            {
+                foreach (var entry in setDescendants)
+                {
+                    listTxHash.Add(entry.TransactionHash.ToString());
+                }
+            }
+
+            return listTxHash;
         }
     }
 }
