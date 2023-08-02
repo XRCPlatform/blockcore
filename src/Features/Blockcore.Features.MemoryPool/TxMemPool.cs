@@ -281,6 +281,11 @@ namespace Blockcore.Features.MemoryPool
             return this.MapTx.TryGet(hash)?.Transaction;
         }
 
+        public TxMempoolEntry GetEntry(uint256 hash)
+        {
+            return this.MapTx.TryGet(hash);
+        }
+
         /// <inheritdoc />
         public FeeRate EstimateFee(int nBlocks)
         {
@@ -431,7 +436,7 @@ namespace Blockcore.Features.MemoryPool
         /// </summary>
         /// <param name="entry">Memory pool entry.</param>
         /// <returns>Set of parent entries.</returns>
-        private SetEntries GetMemPoolParents(TxMempoolEntry entry)
+        public SetEntries GetMemPoolParents(TxMempoolEntry entry)
         {
             Guard.NotNull(entry, nameof(entry));
 

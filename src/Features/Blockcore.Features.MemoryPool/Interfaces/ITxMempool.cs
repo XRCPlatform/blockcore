@@ -3,6 +3,7 @@ using Blockcore.Consensus.TransactionInfo;
 using Blockcore.Features.Consensus.CoinViews;
 using Blockcore.Features.MemoryPool.Fee;
 using Blockcore.NBitcoin;
+using static Blockcore.Features.MemoryPool.TxMempool;
 
 namespace Blockcore.Features.MemoryPool.Interfaces
 {
@@ -167,6 +168,20 @@ namespace Blockcore.Features.MemoryPool.Interfaces
         /// <param name="hash">Transaction hash.</param>
         /// <returns>The transaction.</returns>
         Transaction Get(uint256 hash);
+
+        /// <summary>
+        /// Gets the entry from the memory pool based upon the transaction hash.
+        /// </summary>
+        /// <param name="hash">Transaction hash.</param>
+        /// <returns>The transaction.</returns>
+        TxMempoolEntry GetEntry(uint256 hash);
+
+        /// <summary>
+        /// Gets the parents of a memory pool entry.
+        /// </summary>
+        /// <param name="entry">Memory pool entry.</param>
+        /// <returns>Set of parent entries.</returns>
+        SetEntries GetMemPoolParents(TxMempoolEntry entry);
 
         /// <summary>
         /// The minimum fee to get into the mempool, which may itself not be enough for larger-sized transactions.
